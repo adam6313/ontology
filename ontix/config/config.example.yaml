@@ -1,0 +1,31 @@
+# Ontix 設定檔範例
+# 複製此檔案為 dev.yaml / stg.yaml 並填入實際值
+
+# Gemini
+gemini:
+  api_key: "your-gemini-api-key"
+  embedding_model: "text-embedding-004"
+  llm_model: "gemini-3-flash"
+
+# PostgreSQL
+postgres:
+  host: localhost
+  port: "5432"
+  db: ontix
+  user: ontix
+  password: "your-password"
+
+# Redis
+redis:
+  host: localhost
+  port: "6379"
+
+# Qdrant
+qdrant:
+  host: localhost
+  port: "6333"
+
+# ML Service (Python gRPC)
+ml_service:
+  host: localhost
+  port: "50052"

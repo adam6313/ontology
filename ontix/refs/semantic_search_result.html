@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CosmoListen - Semantic Search Results</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00a38d",
+                        "background-light": "#fafafa",
+                        "background-dark": "#1a1c1e",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#25282a",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #e2e8f0;
+            border-radius: 20px;
+        }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #374151;
+        }
+        .tag-hover-trigger:hover .tag-feedback {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#101817] dark:text-gray-100 font-display min-h-screen flex flex-col overflow-x-hidden">
+<!-- Top Navigation -->
+<header class="sticky top-0 z-50 bg-surface-light dark:bg-surface-dark border-b border-[#f0f5f4] dark:border-gray-800 px-6 py-3 shadow-sm">
+<div class="flex items-center justify-between mx-auto max-w-7xl">
+<!-- Logo Area -->
+<div class="flex items-center gap-3">
+<div class="size-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">graphic_eq</span>
+</div>
+<h2 class="text-lg font-bold tracking-tight">CosmoListen</h2>
+</div>
+<!-- Search Area -->
+<div class="flex-1 max-w-2xl mx-8">
+<div class="relative group">
+<div class="flex w-full items-center bg-[#f0f5f4] dark:bg-gray-800 rounded-lg h-11 transition-shadow focus-within:ring-2 focus-within:ring-primary/20">
+<span class="material-symbols-outlined text-[#5e8d87] dark:text-gray-400 ml-4">search</span>
+<input class="w-full bg-transparent border-none text-sm font-medium text-[#101817] dark:text-white placeholder:text-[#5e8d87] focus:ring-0 px-3" value="Long-lasting (持妝)"/>
+<button class="mr-2 p-1 text-[#5e8d87] hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">close</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Navigation Actions -->
+<div class="flex items-center gap-4">
+<nav class="hidden md:flex items-center gap-6 mr-4">
+<a class="text-sm font-semibold text-[#101817] dark:text-gray-200" href="#">Dashboard</a>
+<a class="text-sm font-medium text-gray-500 hover:text-primary transition-colors" href="#">Analysis</a>
+<a class="text-sm font-medium text-gray-500 hover:text-primary transition-colors" href="#">Reports</a>
+</nav>
+<div class="h-6 w-px bg-gray-200 dark:bg-gray-700"></div>
+<div class="flex gap-2">
+<button class="size-9 flex items-center justify-center rounded-lg hover:bg-[#f0f5f4] dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300 transition-colors relative">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white dark:border-gray-900"></span>
+</button>
+<button class="size-9 flex items-center justify-center rounded-lg hover:bg-[#f0f5f4] dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300 transition-colors">
+<span class="material-symbols-outlined text-[20px]">account_circle</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<!-- Filters Bar -->
+<div class="bg-surface-light dark:bg-surface-dark border-b border-[#f0f5f4] dark:border-gray-800 py-3">
+<div class="max-w-7xl mx-auto px-6 flex items-center gap-3 overflow-x-auto custom-scrollbar">
+<span class="text-xs font-bold text-gray-400 uppercase tracking-wider mr-2">Filters:</span>
+<button class="flex h-8 items-center gap-2 rounded-lg bg-primary/10 border border-primary/20 px-3 hover:bg-primary/20 transition-colors group">
+<span class="text-primary text-xs font-semibold">Platform: All</span>
+<span class="material-symbols-outlined text-primary text-[16px]">expand_more</span>
+</button>
+<button class="flex h-8 items-center gap-2 rounded-lg bg-surface-light dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-3 hover:border-primary/50 transition-colors">
+<span class="text-[#101817] dark:text-gray-200 text-xs font-medium">Date: Last 30 Days</span>
+<span class="material-symbols-outlined text-gray-400 text-[16px]">expand_more</span>
+</button>
+<button class="flex h-8 items-center gap-2 rounded-lg bg-surface-light dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-3 hover:border-primary/50 transition-colors">
+<span class="text-[#101817] dark:text-gray-200 text-xs font-medium">Sentiment: All</span>
+<span class="material-symbols-outlined text-gray-400 text-[16px]">expand_more</span>
+</button>
+<button class="flex h-8 items-center gap-2 rounded-lg bg-surface-light dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-3 hover:border-primary/50 transition-colors">
+<span class="text-[#101817] dark:text-gray-200 text-xs font-medium">Skin Type: Oily/Combo</span>
+<span class="material-symbols-outlined text-gray-400 text-[16px]">expand_more</span>
+</button>
+<div class="flex-1"></div>
+<button class="text-xs font-medium text-primary hover:underline">Clear all</button>
+</div>
+</div>
+<!-- Main Content Grid -->
+<main class="flex-1 max-w-7xl mx-auto w-full p-6">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
+<!-- Left Column: Overview + Feed -->
+<div class="lg:col-span-8 flex flex-col gap-6">
+<!-- Hero Widget: Discussion Overview -->
+<div class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] border border-gray-100 dark:border-gray-800 p-6">
+<div class="flex items-start justify-between mb-6">
+<div>
+<h1 class="text-xl font-bold text-[#101817] dark:text-white mb-1">Semantic Distribution</h1>
+<p class="text-sm text-gray-500 dark:text-gray-400">Analysis of 15.4k mentions for <span class="text-primary font-semibold">"Long-lasting"</span></p>
+</div>
+<div class="text-right">
+<div class="text-2xl font-bold text-[#101817] dark:text-white">15,420</div>
+<div class="text-xs font-medium text-green-600 flex items-center justify-end gap-1 bg-green-50 px-2 py-0.5 rounded-full dark:bg-green-900/30">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+                                +12.5% vs last period
+                            </div>
+</div>
+</div>
+<!-- Custom Chart Implementation -->
+<div class="grid gap-4">
+<!-- Bar 1 -->
+<div class="group">
+<div class="flex justify-between text-xs font-semibold mb-1.5">
+<span class="text-[#101817] dark:text-gray-200">Did not oxidize (暗沉)</span>
+<span class="text-gray-500">45%</span>
+</div>
+<div class="h-8 w-full bg-[#f0f5f4] dark:bg-gray-800 rounded-lg overflow-hidden relative flex items-center">
+<div class="h-full bg-primary absolute top-0 left-0 rounded-lg group-hover:bg-[#008f7b] transition-all duration-500 ease-out" style="width: 45%;"></div>
+<span class="relative z-10 ml-3 text-xs font-medium text-white mix-blend-difference opacity-0 group-hover:opacity-100 transition-opacity">6,939 mentions</span>
+</div>
+</div>
+<!-- Bar 2 -->
+<div class="group">
+<div class="flex justify-between text-xs font-semibold mb-1.5">
+<span class="text-[#101817] dark:text-gray-200">Survived humidity (抗濕)</span>
+<span class="text-gray-500">30%</span>
+</div>
+<div class="h-8 w-full bg-[#f0f5f4] dark:bg-gray-800 rounded-lg overflow-hidden relative flex items-center">
+<div class="h-full bg-primary/80 absolute top-0 left-0 rounded-lg group-hover:bg-primary transition-all duration-500 ease-out" style="width: 30%;"></div>
+<span class="relative z-10 ml-3 text-xs font-medium text-white mix-blend-difference opacity-0 group-hover:opacity-100 transition-opacity">4,626 mentions</span>
+</div>
+</div>
+<!-- Bar 3 -->
+<div class="group">
+<div class="flex justify-between text-xs font-semibold mb-1.5">
+<span class="text-[#101817] dark:text-gray-200">Mask-proof (不沾口罩)</span>
+<span class="text-gray-500">15%</span>
+</div>
+<div class="h-8 w-full bg-[#f0f5f4] dark:bg-gray-800 rounded-lg overflow-hidden relative flex items-center">
+<div class="h-full bg-primary/60 absolute top-0 left-0 rounded-lg group-hover:bg-primary/80 transition-all duration-500 ease-out" style="width: 15%;"></div>
+</div>
+</div>
+<!-- Bar 4 (Negative Sentiment Example) -->
+<div class="group">
+<div class="flex justify-between text-xs font-semibold mb-1.5">
+<span class="text-[#101817] dark:text-gray-200">Faded quickly (斑駁)</span>
+<span class="text-gray-500">10%</span>
+</div>
+<div class="h-8 w-full bg-[#f0f5f4] dark:bg-gray-800 rounded-lg overflow-hidden relative flex items-center">
+<div class="h-full bg-[#FF6B6B] absolute top-0 left-0 rounded-lg group-hover:bg-[#ff5252] transition-all duration-500 ease-out" style="width: 10%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Feed Title -->
+<div class="flex items-center justify-between mt-2">
+<h3 class="text-lg font-bold text-[#101817] dark:text-white">Recent Mentions</h3>
+<div class="flex items-center gap-2">
+<span class="text-xs text-gray-500">Sort by:</span>
+<button class="text-xs font-semibold text-primary flex items-center">Relevance <span class="material-symbols-outlined text-[16px]">arrow_drop_down</span></button>
+</div>
+</div>
+<!-- Post Cards Stack -->
+<div class="flex flex-col gap-4">
+<!-- Card 1 -->
+<article class="bg-surface-light dark:bg-surface-dark rounded-xl p-5 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-3">
+<img class="size-10 rounded-full object-cover border border-gray-100 dark:border-gray-700" data-alt="User Avatar smiling woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtMNUSiUjZzj8I8uhsJTNUfHEOS2oP_PnO_Q5UWso83Y9qGtgZ9GF0nqgNTm3sVC92YhHtmkcvwmbggxMe4Nc5ZUtkvmIQMQsuNeEwsSmxpIJRD2yi8qYcdBkQQY23T888pd-f_rvjc0IybnWfoLEXsHiFib0rnybBac2QO47u_c9GmOWuRpRItkXybkBlmQMYkqM0yCqTZGz9Y2XaJSPmUjkCKZgS6PVRMdSZ4a7iYRqdQGDZDVlNTQt0F3eYWo6vs68c0ahucT0"/>
+<div>
+<div class="flex items-center gap-1.5">
+<p class="text-sm font-bold text-[#101817] dark:text-gray-100">BeautyInsider_TW</p>
+<span class="material-symbols-outlined text-blue-500 text-[14px] filled">verified</span>
+</div>
+<p class="text-xs text-gray-500 flex items-center gap-1">
+<span class="size-3 rounded-full bg-gradient-to-tr from-yellow-400 to-red-500 flex items-center justify-center text-[8px] text-white font-bold">IG</span>
+                                        Instagram • 2h ago
+                                    </p>
+</div>
+</div>
+<button class="text-gray-400 hover:text-primary"><span class="material-symbols-outlined">more_horiz</span></button>
+</div>
+<p class="text-[#101817] dark:text-gray-300 text-sm leading-relaxed mb-4">
+                            Honestly, I was skeptical. I have extremely oily skin but I wore this foundation for 12 hours straight in Taipei heat. It <span class="bg-primary/20 text-primary px-1 rounded font-semibold">stayed all day</span> without separating. The finish is actually better than my high-end ones. Highly recommend for summer! 🥵✨
+                        </p>
+<div class="flex flex-wrap items-center gap-2">
+<!-- AI Tag with Feedback Interaction -->
+<div class="group/tag tag-hover-trigger relative inline-flex">
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-900 text-green-700 dark:text-green-400 text-xs font-medium cursor-default">
+<span class="material-symbols-outlined text-[14px]">sentiment_satisfied</span>
+                                    Positive
+                                </div>
+<button class="tag-feedback absolute -right-6 top-1/2 -translate-y-1/2 opacity-0 transition-all duration-200 text-gray-400 hover:text-red-500 bg-white dark:bg-gray-800 shadow-sm rounded-full p-0.5 border border-gray-200 dark:border-gray-700" title="Report Inaccuracy">
+<span class="material-symbols-outlined text-[14px]">flag</span>
+</button>
+</div>
+<div class="group/tag tag-hover-trigger relative inline-flex">
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900 text-blue-700 dark:text-blue-400 text-xs font-medium cursor-default">
+<span class="material-symbols-outlined text-[14px]">water_drop</span>
+                                    Oily Skin
+                                </div>
+<button class="tag-feedback absolute -right-6 top-1/2 -translate-y-1/2 opacity-0 transition-all duration-200 text-gray-400 hover:text-red-500 bg-white dark:bg-gray-800 shadow-sm rounded-full p-0.5 border border-gray-200 dark:border-gray-700" title="Report Inaccuracy">
+<span class="material-symbols-outlined text-[14px]">flag</span>
+</button>
+</div>
+<div class="group/tag tag-hover-trigger relative inline-flex">
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-900 text-purple-700 dark:text-purple-400 text-xs font-medium cursor-default">
+<span class="material-symbols-outlined text-[14px]">face_3</span>
+                                    Foundation
+                                </div>
+<button class="tag-feedback absolute -right-6 top-1/2 -translate-y-1/2 opacity-0 transition-all duration-200 text-gray-400 hover:text-red-500 bg-white dark:bg-gray-800 shadow-sm rounded-full p-0.5 border border-gray-200 dark:border-gray-700" title="Report Inaccuracy">
+<span class="material-symbols-outlined text-[14px]">flag</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="bg-surface-light dark:bg-surface-dark rounded-xl p-5 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-3">
+<img class="size-10 rounded-full object-cover border border-gray-100 dark:border-gray-700" data-alt="User Avatar cool girl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZwkil8KBKN__TIaIlbJdrQ8CcUwSu06OLcLEeC6zJC3HIDyH5OOlZAjFtSdrUdcYlEQhEZjZZymfyzPYP2Mf_Rq5dnU9biIqtpXhTMB0uCqi42HB460b81u_PastVOnGomTSMQelefUg36KrDnQosF8AgekEmuIfChNXZjlNDEw_X7-zeRoDiXmofs2zDAtHKDg0JhcWP8gWafRN5r_zSBHYswFB7QJ-RUwW2_KZ1BwBdwHW2E32V0OOuK4I2fHQiD77DiIBD-H8"/>
+<div>
+<div class="flex items-center gap-1.5">
+<p class="text-sm font-bold text-[#101817] dark:text-gray-100">JessyMakeup_Review</p>
+</div>
+<p class="text-xs text-gray-500 flex items-center gap-1">
+<span class="size-3 rounded-full bg-black flex items-center justify-center text-[8px] text-white font-bold"><span class="material-symbols-outlined text-[8px]">music_note</span></span>
+                                        TikTok • 5h ago
+                                    </p>
+</div>
+</div>
+<button class="text-gray-400 hover:text-primary"><span class="material-symbols-outlined">more_horiz</span></button>
+</div>
+<p class="text-[#101817] dark:text-gray-300 text-sm leading-relaxed mb-4">
+                            Comparison time! Left side is the new formula, right side is the old one. Usually blushes <span class="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-300 px-1 rounded font-semibold">fade quickly</span> on me, but look at the pigment retention after lunch! The new one definitely wins on the <span class="bg-primary/20 text-primary px-1 rounded font-semibold">long-lasting</span> claim.
+                        </p>
+<div class="flex flex-wrap items-center gap-2">
+<div class="group/tag tag-hover-trigger relative inline-flex">
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-900 text-orange-700 dark:text-orange-400 text-xs font-medium cursor-default">
+<span class="material-symbols-outlined text-[14px]">compare_arrows</span>
+                                    Comparison
+                                </div>
+<button class="tag-feedback absolute -right-6 top-1/2 -translate-y-1/2 opacity-0 transition-all duration-200 text-gray-400 hover:text-red-500 bg-white dark:bg-gray-800 shadow-sm rounded-full p-0.5 border border-gray-200 dark:border-gray-700" title="Report Inaccuracy">
+<span class="material-symbols-outlined text-[14px]">flag</span>
+</button>
+</div>
+<div class="group/tag tag-hover-trigger relative inline-flex">
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-xs font-medium cursor-default">
+<span class="material-symbols-outlined text-[14px]">palette</span>
+                                    Pigment
+                                </div>
+<button class="tag-feedback absolute -right-6 top-1/2 -translate-y-1/2 opacity-0 transition-all duration-200 text-gray-400 hover:text-red-500 bg-white dark:bg-gray-800 shadow-sm rounded-full p-0.5 border border-gray-200 dark:border-gray-700" title="Report Inaccuracy">
+<span class="material-symbols-outlined text-[14px]">flag</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="bg-surface-light dark:bg-surface-dark rounded-xl p-5 border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-3">
+<img class="size-10 rounded-full object-cover border border-gray-100 dark:border-gray-700" data-alt="User Avatar man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdaHK_X5W4PN2I6UTenkUrrcHRfh9zLbFgjQDSL8Z6V6LIjFkJqfDNZ3we39owxdvBv7kxU7-OF9t_dJnZalpDMiTIs7eAwp8QKeQDOWS2F3Wkysym0iHXwIasay_FP-RSDPY5jYjkd9IUPpyOwdB4MYEMUuBktbY-bIqjX7k_UZ62BzYM2-tiNZ4tb6WFG1JChsyeLoIhFIkZ_zkf7DghqeZ8Efg_ok0x4jRZ9jGBj-vdb4SjOKjHwXlLx8TdYyLudFMcvzkuf54"/>
+<div>
+<div class="flex items-center gap-1.5">
+<p class="text-sm font-bold text-[#101817] dark:text-gray-100">MikeStyles_Grooming</p>
+</div>
+<p class="text-xs text-gray-500 flex items-center gap-1">
+<span class="size-3 rounded-full bg-blue-500 flex items-center justify-center text-[8px] text-white font-bold">f</span>
+                                        Facebook • 1d ago
+                                    </p>
+</div>
+</div>
+<button class="text-gray-400 hover:text-primary"><span class="material-symbols-outlined">more_horiz</span></button>
+</div>
+<p class="text-[#101817] dark:text-gray-300 text-sm leading-relaxed mb-4">
+                            Looking for a setting spray that is actually <span class="bg-primary/20 text-primary px-1 rounded font-semibold">mask-proof</span>. Tried the urban decay one but still getting transfer on the nose bridge. Any suggestions for combo skin?
+                        </p>
+<div class="flex flex-wrap items-center gap-2">
+<div class="group/tag tag-hover-trigger relative inline-flex">
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-xs font-medium cursor-default">
+<span class="material-symbols-outlined text-[14px]">help</span>
+                                    Inquiry
+                                </div>
+<button class="tag-feedback absolute -right-6 top-1/2 -translate-y-1/2 opacity-0 transition-all duration-200 text-gray-400 hover:text-red-500 bg-white dark:bg-gray-800 shadow-sm rounded-full p-0.5 border border-gray-200 dark:border-gray-700" title="Report Inaccuracy">
+<span class="material-symbols-outlined text-[14px]">flag</span>
+</button>
+</div>
+<div class="group/tag tag-hover-trigger relative inline-flex">
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 dark:bg-teal-900/20 border border-teal-100 dark:border-teal-900 text-teal-700 dark:text-teal-400 text-xs font-medium cursor-default">
+<span class="material-symbols-outlined text-[14px]">medical_mask</span>
+                                    Mask-proof
+                                </div>
+<button class="tag-feedback absolute -right-6 top-1/2 -translate-y-1/2 opacity-0 transition-all duration-200 text-gray-400 hover:text-red-500 bg-white dark:bg-gray-800 shadow-sm rounded-full p-0.5 border border-gray-200 dark:border-gray-700" title="Report Inaccuracy">
+<span class="material-symbols-outlined text-[14px]">flag</span>
+</button>
+</div>
+</div>
+</article>
+</div>
+</div>
+<!-- Right Column: Similar Dimensions & KOLs -->
+<div class="lg:col-span-4 flex flex-col gap-6">
+<!-- Similar Dimensions Widget -->
+<div class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] border border-gray-100 dark:border-gray-800 p-6 sticky top-24">
+<h3 class="text-base font-bold text-[#101817] dark:text-white mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">hub</span>
+                        Semantic Neighbors
+                    </h3>
+<div class="flex flex-wrap gap-2 mb-6">
+<button class="bg-[#f0f5f4] dark:bg-gray-800 hover:bg-primary/10 text-xs font-medium text-[#101817] dark:text-gray-300 px-3 py-2 rounded-lg border border-transparent hover:border-primary/30 hover:text-primary transition-all duration-200">
+                            Waterproof (防水)
+                        </button>
+<button class="bg-[#f0f5f4] dark:bg-gray-800 hover:bg-primary/10 text-xs font-medium text-[#101817] dark:text-gray-300 px-3 py-2 rounded-lg border border-transparent hover:border-primary/30 hover:text-primary transition-all duration-200">
+                            Transfer-proof (不沾染)
+                        </button>
+<button class="bg-[#f0f5f4] dark:bg-gray-800 hover:bg-primary/10 text-xs font-medium text-[#101817] dark:text-gray-300 px-3 py-2 rounded-lg border border-transparent hover:border-primary/30 hover:text-primary transition-all duration-200">
+                            Setting Spray (定妝噴霧)
+                        </button>
+<button class="bg-[#f0f5f4] dark:bg-gray-800 hover:bg-primary/10 text-xs font-medium text-[#101817] dark:text-gray-300 px-3 py-2 rounded-lg border border-transparent hover:border-primary/30 hover:text-primary transition-all duration-200">
+                            Baking (烘焙定妝)
+                        </button>
+<button class="bg-[#f0f5f4] dark:bg-gray-800 hover:bg-primary/10 text-xs font-medium text-[#101817] dark:text-gray-300 px-3 py-2 rounded-lg border border-transparent hover:border-primary/30 hover:text-primary transition-all duration-200">
+                            Touch-up (補妝)
+                        </button>
+</div>
+<div class="h-px bg-gray-100 dark:bg-gray-800 w-full mb-6"></div>
+<h3 class="text-base font-bold text-[#101817] dark:text-white mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-purple-500">campaign</span>
+                        Top Influencers (KOLs)
+                    </h3>
+<div class="flex flex-col gap-4">
+<!-- KOL 1 -->
+<div class="flex items-center gap-3 p-2 hover:bg-[#f0f5f4] dark:hover:bg-gray-800 rounded-lg transition-colors cursor-pointer group">
+<div class="relative">
+<img class="size-10 rounded-full object-cover" data-alt="KOL profile cosmetic queen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_KlOtmFTXg5ZloLoo2ad63rFsmYZ32X17CWcPlhCBcwCarkyNB8xniRsdZxhLXzF2KSJIxUk0tMB4upbp-SYdql0wFwRkSur-X4q0XE7yZAcyVjM3lAYMZKjvamWBoz8CODsRVy-KkFT_5xjsOSglbWLZKXwcL5UXpBGO317ZWudKgqhh6WMSGPMXr3zbjirQz5854A7I7fCI2N-WR4PAaJ-O0he4Wr7RgSCyjxwg2j8BrbqTJebI_stw0mvWRETqXkk55WNEYDc"/>
+<div class="absolute -bottom-1 -right-1 bg-yellow-400 text-xs font-bold w-4 h-4 flex items-center justify-center rounded-full text-white border border-white dark:border-gray-900">1</div>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="text-sm font-bold text-[#101817] dark:text-white truncate">@CosmeticQueen</h4>
+<p class="text-xs text-gray-500 truncate">Reach: 1.2M • Engagement: High</p>
+</div>
+<span class="material-symbols-outlined text-gray-300 group-hover:text-primary text-[20px]">chevron_right</span>
+</div>
+<!-- KOL 2 -->
+<div class="flex items-center gap-3 p-2 hover:bg-[#f0f5f4] dark:hover:bg-gray-800 rounded-lg transition-colors cursor-pointer group">
+<div class="relative">
+<img class="size-10 rounded-full object-cover" data-alt="KOL profile makeup guru" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjHwpiiTsbMOxqgbQcQl6npaVxU49gXeE2i1WUA-mEZbJUXAQ9ruvKWCCfoln_rqtIzUzCiQhAp-AzMpqplbNu8E2RAGGZdN51DRhC9eDX2orgtUNYuroxGSkG1NfUaWBEm3VzHde7tP_x7DfSEwe2cFrVnoioxWT14yG2QDoEQRYQKDj8-ya7JS3jbkWmKSNiNMAuRd7JigoEgANaBHSTkHG34sKzm0_SoYkJoE3w-Z9PnKF73fJVanJ0q4ecXUW6Pt7-xHB523M"/>
+<div class="absolute -bottom-1 -right-1 bg-gray-300 text-xs font-bold w-4 h-4 flex items-center justify-center rounded-full text-white border border-white dark:border-gray-900">2</div>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="text-sm font-bold text-[#101817] dark:text-white truncate">@SkinDeep_Jen</h4>
+<p class="text-xs text-gray-500 truncate">Reach: 850k • Engagement: Med</p>
+</div>
+<span class="material-symbols-outlined text-gray-300 group-hover:text-primary text-[20px]">chevron_right</span>
+</div>
+<!-- KOL 3 -->
+<div class="flex items-center gap-3 p-2 hover:bg-[#f0f5f4] dark:hover:bg-gray-800 rounded-lg transition-colors cursor-pointer group">
+<div class="relative">
+<img class="size-10 rounded-full object-cover" data-alt="KOL profile beauty expert" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJ1778fq_mHSER6WTJMttjn26wW1bUHHejGrBdxek2wSXYcijOrqZ0rnmbaIp6eXVz4eTK8f-Xo_RkGQb-SNSXNx48Feqxq6Z2Ysq153-ShjMrn25Sir3GoIXQZ28LGNAzn4EsfSNTz4XhddkwHmiRJPvCnYOEIYyABD3R1fdPVp4c7HUKRH-ltOwww9BsybdN8CI_Xnw2OLFYaCQIW5EWTTIwan5eQhsYSDpk8Q8ptKTws1K9oJ98xgw4BsxphotHCWb1N4oLmnw"/>
+<div class="absolute -bottom-1 -right-1 bg-orange-700 text-xs font-bold w-4 h-4 flex items-center justify-center rounded-full text-white border border-white dark:border-gray-900">3</div>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="text-sm font-bold text-[#101817] dark:text-white truncate">@UrbanBeauty</h4>
+<p class="text-xs text-gray-500 truncate">Reach: 500k • Engagement: High</p>
+</div>
+<span class="material-symbols-outlined text-gray-300 group-hover:text-primary text-[20px]">chevron_right</span>
+</div>
+</div>
+<!-- Abstract Empty State Placeholder (for delight) -->
+<div class="mt-8 p-4 bg-gradient-to-br from-[#f0f5f4] to-white dark:from-gray-800 dark:to-gray-900 rounded-xl border border-dashed border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center text-center">
+<div class="mb-2 size-10 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[20px]">auto_awesome</span>
+</div>
+<p class="text-xs font-medium text-gray-500">Discover emerging trends</p>
+<button class="mt-2 text-[10px] font-bold text-primary uppercase tracking-wide hover:underline">Explore More</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Trend Explorer - Semantic Knowledge Graph</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#248f6b",
+                        "primary-dark": "#1a6b4f",
+                        "secondary": "#db2777", // Pink for beauty accent
+                        "accent": "#eab308", // Gold for beauty accent
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#131f1b",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1c2e29",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    boxShadow: {
+                        'glow': '0 0 15px rgba(36, 143, 107, 0.4)',
+                        'glow-secondary': '0 0 15px rgba(219, 39, 119, 0.4)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for timeline */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #248f6b;
+            cursor: pointer;
+            margin-top: -6px;
+            box-shadow: 0 0 0 4px rgba(36, 143, 107, 0.2);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #e9f1ef;
+            border-radius: 2px;
+        }
+        .dark input[type=range]::-webkit-slider-runnable-track {
+            background: #2d453e;
+        }
+
+        /* Graph Animation Simulation */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        .animate-float-delayed {
+            animation: float 7s ease-in-out infinite 1s;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#101916] dark:text-[#f0fdfa] font-display overflow-hidden h-screen w-full flex flex-col relative transition-colors duration-300">
+<!-- 3D Graph Simulation Layer (Background) -->
+<div class="absolute inset-0 z-0 overflow-hidden select-none pointer-events-auto" id="graph-container">
+<!-- Graph Connections (SVG Lines) -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none opacity-40 dark:opacity-30" xmlns="http://www.w3.org/2000/svg">
+<!-- Central Cluster Connections -->
+<line stroke="#248f6b" stroke-width="2" x1="50%" x2="65%" y1="50%" y2="40%"></line>
+<line stroke="#248f6b" stroke-width="3" x1="50%" x2="35%" y1="50%" y2="60%"></line>
+<line stroke="#db2777" stroke-dasharray="5,5" stroke-width="1.5" x1="50%" x2="40%" y1="50%" y2="35%"></line>
+<line stroke="#248f6b" stroke-width="1" x1="50%" x2="60%" y1="50%" y2="65%"></line>
+<!-- Secondary Connections -->
+<line stroke="#eab308" stroke-width="1" x1="65%" x2="75%" y1="40%" y2="35%"></line>
+<line stroke="#248f6b" stroke-width="1" x1="65%" x2="70%" y1="40%" y2="50%"></line>
+<line stroke="#248f6b" stroke-width="2" x1="35%" x2="25%" y1="60%" y2="65%"></line>
+<line stroke="#db2777" stroke-width="1" x1="35%" x2="30%" y1="60%" y2="50%"></line>
+<!-- Distant Connections -->
+<line stroke="#9ca3af" stroke-width="0.5" x1="40%" x2="30%" y1="35%" y2="25%"></line>
+</svg>
+<!-- Nodes -->
+<!-- Center Node: Base Makeup -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-surface-light dark:bg-surface-dark shadow-glow flex items-center justify-center border-4 border-primary z-20 animate-float cursor-pointer group hover:scale-105 transition-transform duration-300">
+<div class="text-center">
+<span class="material-symbols-outlined text-primary text-4xl mb-1">face_3</span>
+<p class="font-bold text-sm leading-tight">Base<br/>Makeup</p>
+</div>
+<!-- Ripple Effect -->
+<div class="absolute inset-0 rounded-full border border-primary opacity-50 animate-ping"></div>
+</div>
+<!-- Node: Glass Skin (Active/Hovered) -->
+<div class="absolute top-[40%] left-[65%] w-24 h-24 rounded-full bg-surface-light dark:bg-surface-dark shadow-glow-secondary flex items-center justify-center border-2 border-secondary z-20 animate-float-delayed cursor-pointer hover:scale-110 transition-transform duration-300">
+<div class="text-center">
+<span class="material-symbols-outlined text-secondary text-2xl mb-1">water_drop</span>
+<p class="font-bold text-xs">Glass<br/>Skin</p>
+</div>
+</div>
+<!-- Node: Lip Care -->
+<div class="absolute top-[60%] left-[35%] w-28 h-28 rounded-full bg-surface-light dark:bg-surface-dark shadow-lg flex items-center justify-center border-2 border-primary/50 z-10 hover:border-primary cursor-pointer transition-colors duration-300">
+<div class="text-center opacity-80">
+<span class="material-symbols-outlined text-primary text-3xl mb-1">palette</span>
+<p class="font-medium text-xs">Lip Care</p>
+</div>
+</div>
+<!-- Node: Sun Protection -->
+<div class="absolute top-[35%] left-[40%] w-20 h-20 rounded-full bg-surface-light dark:bg-surface-dark shadow-lg flex items-center justify-center border border-accent/70 z-10 hover:border-accent cursor-pointer transition-colors duration-300">
+<div class="text-center opacity-80">
+<span class="material-symbols-outlined text-accent text-2xl mb-1">wb_sunny</span>
+<p class="font-medium text-[10px]">SPF</p>
+</div>
+</div>
+<!-- Small Semantic Nodes -->
+<div class="absolute top-[65%] left-[60%] w-3 h-3 rounded-full bg-primary/40"></div>
+<div class="absolute top-[35%] left-[75%] w-4 h-4 rounded-full bg-accent/40"></div>
+<div class="absolute top-[65%] left-[25%] w-4 h-4 rounded-full bg-primary/40"></div>
+<div class="absolute top-[50%] left-[30%] w-2 h-2 rounded-full bg-secondary/40"></div>
+<div class="absolute top-[25%] left-[30%] w-3 h-3 rounded-full bg-gray-400/40"></div>
+</div>
+<!-- UI Overlay Layer -->
+<div class="relative z-30 flex flex-col h-full pointer-events-none">
+<!-- Header -->
+<header class="flex items-center justify-between px-8 py-4 pointer-events-auto bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md border-b border-[#e9f1ef] dark:border-[#2d453e]">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white shadow-lg">
+<span class="material-symbols-outlined">hub</span>
+</div>
+<div>
+<h1 class="text-xl font-bold tracking-tight">Trend Explorer</h1>
+<p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Semantic Knowledge Graph v3.1</p>
+</div>
+</div>
+<!-- Search Bar -->
+<div class="hidden md:flex items-center h-10 w-96 bg-background-light dark:bg-background-dark rounded-lg border border-transparent focus-within:border-primary transition-all ml-8">
+<span class="material-symbols-outlined text-gray-400 mx-3">search</span>
+<input class="bg-transparent border-none outline-none w-full text-sm placeholder-gray-400 h-full focus:ring-0" placeholder="Search trends, ingredients, or KOLs..." type="text"/>
+<div class="pr-2 text-xs text-gray-400">⌘K</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 bg-background-light dark:bg-background-dark rounded-lg p-1 border border-[#e9f1ef] dark:border-[#2d453e]">
+<button class="px-3 py-1.5 rounded-md bg-white dark:bg-[#2d453e] shadow-sm text-xs font-semibold">Graph View</button>
+<button class="px-3 py-1.5 rounded-md text-gray-500 hover:text-primary transition-colors text-xs font-medium">List View</button>
+</div>
+<div class="w-px h-6 bg-gray-200 dark:bg-gray-700"></div>
+<div class="flex items-center gap-3">
+<button class="relative p-2 text-gray-500 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-surface-dark"></span>
+</button>
+<div class="w-9 h-9 rounded-full bg-cover bg-center border-2 border-white dark:border-surface-dark shadow-md" data-alt="User profile avatar showing a smiling person" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDs_t7SsbIGR8spYSi5S9tJarca3Od9AummpgG2QGPHnhAStEwdyu1KtCJ3c7ZxV51mZNvyXxEmBsz4tOn8wBLed9zJLABsnpf3fAGxicSBXyUkACNZetyRaqEiQ_1rDx1CzUZc7QP_xaITzzibDuEnTRpeTmvbruSLRI0LD-UqfbVcVf1X1m1wERFF7jO0yEw_C6H00HjmjQOXoSuYeUxumylihIGp3GUXPo4Eq_pK1EpZJNFLiVrgEV16NfteAGfozCU2egrL8l8');"></div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 relative w-full h-full">
+<!-- Filters (Top Left) -->
+<div class="absolute top-6 left-8 pointer-events-auto flex flex-col gap-3">
+<div class="flex gap-2 flex-wrap max-w-lg">
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-light dark:bg-surface-dark backdrop-blur rounded-full shadow-sm border border-[#e9f1ef] dark:border-[#2d453e] hover:border-primary transition-colors group">
+<span class="text-xs font-bold text-gray-600 dark:text-gray-300 group-hover:text-primary">Category: All</span>
+<span class="material-symbols-outlined text-base text-gray-400">expand_more</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-light dark:bg-surface-dark backdrop-blur rounded-full shadow-sm border border-[#e9f1ef] dark:border-[#2d453e] hover:border-primary transition-colors group">
+<span class="text-xs font-bold text-gray-600 dark:text-gray-300 group-hover:text-primary">Region: Global</span>
+<span class="material-symbols-outlined text-base text-gray-400">public</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-light dark:bg-surface-dark backdrop-blur rounded-full shadow-sm border border-[#e9f1ef] dark:border-[#2d453e] hover:border-secondary transition-colors group">
+<span class="text-xs font-bold text-gray-600 dark:text-gray-300 group-hover:text-secondary">Sentiment: Positive</span>
+<span class="material-symbols-outlined text-base text-secondary">sentiment_satisfied</span>
+</button>
+</div>
+</div>
+<!-- Legend (Top Right) -->
+<div class="absolute top-6 right-8 pointer-events-auto">
+<div class="bg-surface-light/90 dark:bg-surface-dark/90 backdrop-blur p-4 rounded-xl shadow-lg border border-[#e9f1ef] dark:border-[#2d453e] w-48">
+<h3 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">Legend</h3>
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+<span class="text-xs font-medium">Core Category</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-secondary"></div>
+<span class="text-xs font-medium">Rising Trend</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-accent"></div>
+<span class="text-xs font-medium">Ingredient</span>
+</div>
+<div class="h-px bg-gray-200 dark:bg-gray-700 my-1"></div>
+<div class="flex items-center gap-2">
+<div class="w-8 h-0.5 bg-primary"></div>
+<span class="text-[10px] text-gray-500">Strong Co-occurrence</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Insights Card (Simulated Hover State next to Glass Skin node) -->
+<div class="absolute top-[32%] left-[68%] w-[340px] pointer-events-auto animate-float-delayed" style="animation-delay: 0.1s;">
+<div class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl overflow-hidden border border-secondary/30 ring-1 ring-secondary/10">
+<!-- Card Header -->
+<div class="p-4 border-b border-gray-100 dark:border-gray-800 bg-secondary/5">
+<div class="flex justify-between items-start mb-1">
+<h2 class="text-lg font-bold text-gray-900 dark:text-white">Glass Skin Trend</h2>
+<span class="px-2 py-0.5 bg-secondary text-white text-[10px] font-bold uppercase tracking-wide rounded-full">Viral</span>
+</div>
+<p class="text-xs text-gray-500 dark:text-gray-400">Semantic Cluster: Hydration • Dewy Finish</p>
+</div>
+<!-- Card Body -->
+<div class="p-4 space-y-4">
+<!-- Stats Row -->
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Sentiment</span>
+<div class="flex items-center gap-1">
+<span class="text-2xl font-bold text-primary">9.2</span>
+<span class="material-symbols-outlined text-primary text-sm">trending_up</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-[10px] uppercase text-gray-400 font-bold tracking-wider">7-Day Vol</span>
+<span class="text-lg font-bold">45.2k</span>
+</div>
+</div>
+<!-- Sparkline Chart -->
+<div class="h-16 w-full bg-gray-50 dark:bg-[#253630] rounded-lg p-2 relative">
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 100 40">
+<path d="M0 30 Q 10 35, 20 25 T 40 20 T 60 10 T 80 15 T 100 5" fill="none" stroke="#248f6b" stroke-linecap="round" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+<defs>
+<lineargradient id="gradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#248f6b" stop-opacity="0.2"></stop>
+<stop offset="100%" stop-color="#248f6b" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0 30 Q 10 35, 20 25 T 40 20 T 60 10 T 80 15 T 100 5 V 40 H 0 Z" fill="url(#gradient)" opacity="0.5"></path>
+</svg>
+<!-- Hover dot on chart -->
+<div class="absolute top-2 right-0 w-2 h-2 bg-primary rounded-full ring-4 ring-primary/20"></div>
+</div>
+<!-- KOL Info -->
+<div class="flex items-center gap-3 bg-gray-50 dark:bg-[#253630] p-2 rounded-lg">
+<div class="w-8 h-8 rounded-full bg-cover bg-center" data-alt="Small avatar of a beauty influencer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAk7pgQ9Pknf8QGoxgjCsdZ7ELKnfd-VZCuwrfxzfu0wWJqHTdlTcxfuk3Rhq8u99_MOWc2ivTLP33K2_iQiGifszNXcJlI2gDlF3_8gqfr8LyoVKtSPTYkoVUqBwNKmVmuvwcKcCqRU2qw0Vzwquetwh5la7ACRfyphDk0Ph-B7A8Tfp4UQey4R-oJJ_JeT7X1eSN-IUz9YYKmZ_N5WNNyTQUlq_FY4iM-u2h-eWizg-Hy6JvnppHZSe8SIn0arczpHJyEozuOLkI');"></div>
+<div class="flex-1 min-w-0">
+<p class="text-xs font-bold truncate">Top KOL: @SkincareGuru</p>
+<p class="text-[10px] text-gray-500 truncate">Influencer • 1.2M Followers</p>
+</div>
+<button class="text-primary hover:text-primary-dark">
+<span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+</div>
+<button class="w-full py-2 bg-primary hover:bg-primary-dark text-white rounded-lg text-sm font-semibold shadow-md transition-colors flex items-center justify-center gap-2">
+<span>Deep Dive Analysis</span>
+<span class="material-symbols-outlined text-base">analytics</span>
+</button>
+</div>
+</div>
+<!-- Connecting Line to Node -->
+<svg class="absolute top-[40%] -left-8 w-8 h-10 pointer-events-none" style="overflow:visible">
+<path d="M 32 10 L 0 20" fill="none" stroke="#db2777" stroke-dasharray="4,4" stroke-width="1"></path>
+<circle cx="0" cy="20" fill="#db2777" r="3"></circle>
+</svg>
+</div>
+<!-- Controls (Bottom Right) -->
+<div class="absolute bottom-24 right-8 pointer-events-auto flex flex-col gap-2">
+<button class="w-10 h-10 rounded-full bg-surface-light dark:bg-surface-dark shadow-lg flex items-center justify-center text-gray-600 hover:text-primary transition-colors border border-[#e9f1ef] dark:border-[#2d453e]">
+<span class="material-symbols-outlined">add</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-surface-light dark:bg-surface-dark shadow-lg flex items-center justify-center text-gray-600 hover:text-primary transition-colors border border-[#e9f1ef] dark:border-[#2d453e]">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-surface-light dark:bg-surface-dark shadow-lg flex items-center justify-center text-gray-600 hover:text-primary transition-colors border border-[#e9f1ef] dark:border-[#2d453e]">
+<span class="material-symbols-outlined">center_focus_strong</span>
+</button>
+</div>
+</main>
+<!-- Timeline Footer -->
+<footer class="bg-surface-light/95 dark:bg-surface-dark/95 backdrop-blur-md border-t border-[#e9f1ef] dark:border-[#2d453e] px-8 py-4 pointer-events-auto">
+<div class="flex items-center gap-6 max-w-7xl mx-auto">
+<!-- Playback Controls -->
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary-dark transition-colors shadow-md">
+<span class="material-symbols-outlined">play_arrow</span>
+</button>
+<div class="flex flex-col ml-2">
+<span class="text-[10px] uppercase text-gray-400 font-bold tracking-wider">Playback</span>
+<div class="flex items-center gap-1 cursor-pointer group">
+<span class="text-xs font-bold text-primary group-hover:underline">1x Speed</span>
+<span class="material-symbols-outlined text-xs text-gray-400">expand_less</span>
+</div>
+</div>
+</div>
+<!-- Timeline Slider -->
+<div class="flex-1 flex flex-col justify-center gap-2">
+<div class="flex justify-between text-[10px] font-medium text-gray-400 uppercase tracking-wide">
+<span>Sep 01</span>
+<span>Sep 15</span>
+<span class="text-primary font-bold">Oct 01 (Current)</span>
+<span>Oct 15</span>
+<span>Oct 31</span>
+</div>
+<div class="relative w-full h-6 flex items-center">
+<!-- Range Input -->
+<input class="w-full h-1 bg-transparent z-20 appearance-none focus:outline-none" max="100" min="0" type="range" value="65"/>
+<!-- Progress Bar Visuals -->
+<div class="absolute top-1/2 left-0 -translate-y-1/2 w-full h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden z-10 pointer-events-none">
+<div class="h-full bg-primary w-[65%]"></div>
+</div>
+<!-- Markers -->
+<div class="absolute top-1/2 left-0 -translate-y-1/2 w-full h-full flex justify-between px-1 pointer-events-none z-0">
+<div class="w-px h-2 bg-gray-300 dark:bg-gray-600 mt-2"></div>
+<div class="w-px h-2 bg-gray-300 dark:bg-gray-600 mt-2"></div>
+<div class="w-px h-2 bg-gray-300 dark:bg-gray-600 mt-2"></div>
+<div class="w-px h-2 bg-gray-300 dark:bg-gray-600 mt-2"></div>
+<div class="w-px h-2 bg-gray-300 dark:bg-gray-600 mt-2"></div>
+</div>
+</div>
+</div>
+<!-- Snapshot/Export -->
+<div class="flex items-center gap-3 border-l border-gray-200 dark:border-gray-700 pl-6">
+<button class="flex flex-col items-center gap-0.5 text-gray-500 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">photo_camera</span>
+<span class="text-[9px] font-medium">Snapshot</span>
+</button>
+<button class="flex flex-col items-center gap-0.5 text-gray-500 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">ios_share</span>
+<span class="text-[9px] font-medium">Export</span>
+</button>
+</div>
+</div>
+</footer>
+</div>
+</body></html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kolr Analytics Dashboard</title>
+<!-- Google Fonts: Manrope -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00a38d",
+                        "primary-dark": "#008573",
+                        "secondary": "#5e8d87",
+                        "background-light": "#fafafa",
+                        "background-dark": "#1a1c1e",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#25282a",
+                        "border-light": "#e5e7eb",
+                        "border-dark": "#374151",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        .treemap-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 1rem;
+            height: 400px;
+        }
+        /* Grid Areas for Treemap */
+        .area-1 { grid-column: span 2; grid-row: span 4; } /* Main Topic */
+        .area-2 { grid-column: span 2; grid-row: span 2; } /* Secondary */
+        .area-3 { grid-column: span 1; grid-row: span 2; } /* Tertiary */
+        .area-4 { grid-column: span 1; grid-row: span 1; } /* Quaternary */
+        .area-5 { grid-column: span 1; grid-row: span 1; } /* Quinary */
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 overflow-hidden h-screen flex">
+<!-- LEFT SIDEBAR -->
+<aside class="w-64 bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark flex flex-col justify-between shrink-0 z-20">
+<div class="flex flex-col p-4 gap-6">
+<!-- Brand -->
+<div class="flex items-center gap-3 px-2">
+<div class="bg-primary/10 p-2 rounded-xl">
+<div class="bg-primary size-6 rounded-full"></div>
+</div>
+<div class="flex flex-col">
+<h1 class="text-lg font-bold leading-none tracking-tight">Kolr</h1>
+<span class="text-xs text-secondary font-medium">Analytics AI</span>
+</div>
+</div>
+<!-- Navigation -->
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary font-medium transition-colors" href="#">
+<span class="material-symbols-outlined filled" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+                    Dashboard
+                </a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors font-medium" href="#">
+<span class="material-symbols-outlined">trending_up</span>
+                    Trend Analysis
+                </a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors font-medium" href="#">
+<span class="material-symbols-outlined">group</span>
+                    Competitors
+                </a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors font-medium" href="#">
+<span class="material-symbols-outlined">description</span>
+                    Reports
+                </a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors font-medium" href="#">
+<span class="material-symbols-outlined">settings</span>
+                    Settings
+                </a>
+</nav>
+</div>
+<!-- User Profile -->
+<div class="p-4 border-t border-border-light dark:border-border-dark">
+<div class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">
+<div class="size-9 rounded-full bg-cover bg-center" data-alt="Portrait of a professional woman with glasses smiling" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBk0i0RNZt7rL98TjYx38BpUG3WktcuoBwygCfMmVqyrPbThXY6tUzxIIsbwABZvcYg3qsAC59G84mlp05U83FVdTIu1O8RiCgO4WJwtzpY111t9waIlUjPmpVl2zO6hDqQaOmerUN1yFjSUw_YLakLhHhLRffDbv9z4J_-JpTB5ZLsAkjM8mCFXtz9nXPxBUcc6msTahAU9S4XPCBuE2vDY5pnftbSDhgHPqE1n6k5q6O9gdRO0VktisTKrm5aNM7g-IOYWofef1U');"></div>
+<div class="flex flex-col overflow-hidden">
+<p class="text-sm font-semibold truncate">Sarah Chen</p>
+<p class="text-xs text-secondary truncate">Product Lead</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- MAIN CONTENT -->
+<main class="flex-1 flex flex-col h-full overflow-hidden relative">
+<!-- Top Search Bar / Header Area -->
+<div class="w-full bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark px-8 py-6 z-10 sticky top-0">
+<div class="max-w-5xl mx-auto w-full flex flex-col gap-6">
+<!-- Greeting/Title -->
+<div>
+<h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-1">Market Pulse</h2>
+<p class="text-slate-500 dark:text-slate-400">Real-time analysis of cosmetic trends and consumer sentiment.</p>
+</div>
+<!-- Semantic Search -->
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-primary">
+<span class="material-symbols-outlined">auto_awesome</span>
+</div>
+<input class="w-full h-14 pl-12 pr-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all shadow-sm group-hover:shadow-md" placeholder="Ask Kolr about trends, e.g., 'Long-lasting lipstick' (持妝)..." type="text"/>
+<div class="absolute inset-y-0 right-2 flex items-center">
+<button class="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-2 py-1 text-xs font-medium text-slate-500 dark:text-slate-400 shadow-sm">⌘ K</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto p-8">
+<div class="max-w-5xl mx-auto w-full flex flex-col gap-8 pb-10">
+<!-- Section: Trend Detection -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">trending_up</span>
+                            Trend Detection
+                        </h3>
+<button class="text-sm text-primary font-medium hover:text-primary-dark transition-colors">View detailed report</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Card 1 -->
+<div class="bg-surface-light dark:bg-surface-dark p-5 rounded-2xl border border-border-light dark:border-border-dark shadow-sm hover:shadow-md transition-shadow group cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="text-sm font-medium text-slate-500 dark:text-slate-400">Foundation</span>
+<span class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold px-2 py-1 rounded-full flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span> 150%
+                                </span>
+</div>
+<h4 class="text-xl font-bold text-slate-900 dark:text-white mb-1 group-hover:text-primary transition-colors">Cushion Tech</h4>
+<p class="text-xs text-slate-500">High velocity keywords</p>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-light dark:bg-surface-dark p-5 rounded-2xl border border-border-light dark:border-border-dark shadow-sm hover:shadow-md transition-shadow group cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="text-sm font-medium text-slate-500 dark:text-slate-400">Aesthetics</span>
+<span class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold px-2 py-1 rounded-full flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span> 85%
+                                </span>
+</div>
+<h4 class="text-xl font-bold text-slate-900 dark:text-white mb-1 group-hover:text-primary transition-colors">Clean Girl</h4>
+<p class="text-xs text-slate-500">Trending lifestyle</p>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-light dark:bg-surface-dark p-5 rounded-2xl border border-border-light dark:border-border-dark shadow-sm hover:shadow-md transition-shadow group cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="text-sm font-medium text-slate-500 dark:text-slate-400">Ingredients</span>
+<span class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold px-2 py-1 rounded-full flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span> 40%
+                                </span>
+</div>
+<h4 class="text-xl font-bold text-slate-900 dark:text-white mb-1 group-hover:text-primary transition-colors">SPF 50+</h4>
+<p class="text-xs text-slate-500">Seasonal demand</p>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-light dark:bg-surface-dark p-5 rounded-2xl border border-border-light dark:border-border-dark shadow-sm hover:shadow-md transition-shadow group cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="text-sm font-medium text-slate-500 dark:text-slate-400">Category</span>
+<span class="bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 text-xs font-bold px-2 py-1 rounded-full flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span> 22%
+                                </span>
+</div>
+<h4 class="text-xl font-bold text-slate-900 dark:text-white mb-1 group-hover:text-primary transition-colors">Lip Oils</h4>
+<p class="text-xs text-slate-500">Emerging competitor</p>
+</div>
+</div>
+</section>
+<!-- Section: Topic Discovery (Treemap) -->
+<section class="flex flex-col gap-4">
+<div class="flex justify-between items-end">
+<div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Topic Discovery</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400">Share of voice distribution in current conversations.</p>
+</div>
+<div class="flex gap-2">
+<button class="size-8 flex items-center justify-center rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined text-[20px]">grid_view</span>
+</button>
+<button class="size-8 flex items-center justify-center rounded bg-transparent text-slate-400 hover:text-slate-600 transition-colors">
+<span class="material-symbols-outlined text-[20px]">list</span>
+</button>
+</div>
+</div>
+<div class="treemap-grid w-full">
+<!-- Block 1: Main (Photography) -->
+<div class="area-1 bg-primary rounded-2xl p-6 relative overflow-hidden group hover:scale-[1.01] transition-transform duration-300 shadow-sm cursor-pointer">
+<div class="absolute inset-0 bg-gradient-to-br from-white/10 to-black/5 pointer-events-none"></div>
+<div class="relative z-10 flex flex-col h-full justify-between text-white">
+<div class="flex justify-between items-start">
+<span class="font-semibold tracking-wide uppercase text-sm opacity-80">Visuals</span>
+<span class="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+</div>
+<div>
+<h4 class="text-4xl font-light mb-1">36%</h4>
+<p class="text-xl font-bold">Photography &amp; Aesthetic</p>
+<p class="text-sm text-white/80 mt-2 line-clamp-2">Consumers focusing on high-contrast, moody product shots. "Vibe" is a key descriptor.</p>
+</div>
+</div>
+</div>
+<!-- Block 2: Secondary (Design) -->
+<div class="area-2 bg-[#2dccc5] dark:bg-[#126d66] rounded-2xl p-5 relative overflow-hidden group hover:scale-[1.01] transition-transform duration-300 shadow-sm cursor-pointer text-white">
+<div class="relative z-10 flex flex-col h-full justify-between">
+<div class="flex justify-between items-start">
+<span class="font-semibold tracking-wide uppercase text-xs opacity-80">Product</span>
+</div>
+<div>
+<h4 class="text-3xl font-light mb-1">24%</h4>
+<p class="text-lg font-bold">Packaging Design</p>
+<p class="text-xs text-white/90 mt-1">Minimalist refillables gaining traction.</p>
+</div>
+</div>
+</div>
+<!-- Block 3: Tertiary (Texture) -->
+<div class="area-3 bg-slate-200 dark:bg-slate-700 rounded-2xl p-5 relative overflow-hidden group hover:scale-[1.01] transition-transform duration-300 shadow-sm cursor-pointer text-slate-800 dark:text-white">
+<div class="relative z-10 flex flex-col h-full justify-between">
+<div class="flex justify-between items-start">
+<span class="font-semibold tracking-wide uppercase text-xs opacity-60">Sensory</span>
+</div>
+<div>
+<h4 class="text-2xl font-light mb-1">15%</h4>
+<p class="text-base font-bold">Texture</p>
+</div>
+</div>
+</div>
+<!-- Block 4: Quaternary (Price) -->
+<div class="area-4 bg-slate-100 dark:bg-slate-800 rounded-2xl p-4 relative overflow-hidden group hover:scale-[1.01] transition-transform duration-300 shadow-sm cursor-pointer border border-slate-200 dark:border-slate-700">
+<div class="relative z-10 flex flex-col h-full justify-between">
+<h4 class="text-xl font-light text-slate-400 dark:text-slate-500">10%</h4>
+<p class="text-sm font-bold text-slate-700 dark:text-slate-200">Price Point</p>
+</div>
+</div>
+<!-- Block 5: Quinary (Scent) -->
+<div class="area-5 bg-slate-100 dark:bg-slate-800 rounded-2xl p-4 relative overflow-hidden group hover:scale-[1.01] transition-transform duration-300 shadow-sm cursor-pointer border border-slate-200 dark:border-slate-700">
+<div class="relative z-10 flex flex-col h-full justify-between">
+<h4 class="text-xl font-light text-slate-400 dark:text-slate-500">8%</h4>
+<p class="text-sm font-bold text-slate-700 dark:text-slate-200">Scent</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Extra metrics row -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl border border-border-light dark:border-border-dark flex items-center gap-4">
+<div class="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-full text-blue-600 dark:text-blue-400">
+<span class="material-symbols-outlined">visibility</span>
+</div>
+<div>
+<p class="text-sm text-slate-500 dark:text-slate-400">Total Mentions</p>
+<p class="text-2xl font-bold text-slate-900 dark:text-white">24.5k</p>
+</div>
+</div>
+<div class="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl border border-border-light dark:border-border-dark flex items-center gap-4">
+<div class="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-full text-purple-600 dark:text-purple-400">
+<span class="material-symbols-outlined">sentiment_satisfied</span>
+</div>
+<div>
+<p class="text-sm text-slate-500 dark:text-slate-400">Sentiment Score</p>
+<p class="text-2xl font-bold text-slate-900 dark:text-white">8.4<span class="text-sm font-normal text-slate-400">/10</span></p>
+</div>
+</div>
+<div class="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl border border-border-light dark:border-border-dark flex items-center gap-4">
+<div class="bg-orange-50 dark:bg-orange-900/20 p-3 rounded-full text-orange-600 dark:text-orange-400">
+<span class="material-symbols-outlined">campaign</span>
+</div>
+<div>
+<p class="text-sm text-slate-500 dark:text-slate-400">Brand Reach</p>
+<p class="text-2xl font-bold text-slate-900 dark:text-white">1.2M</p>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- RIGHT SIDEBAR (Live Insights) -->
+<aside class="w-80 bg-surface-light dark:bg-surface-dark border-l border-border-light dark:border-border-dark flex flex-col shrink-0 overflow-hidden z-20">
+<div class="p-5 border-b border-border-light dark:border-border-dark">
+<h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+<span class="relative flex h-2.5 w-2.5">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+</span>
+                Live Feed
+            </h3>
+</div>
+<div class="flex-1 overflow-y-auto p-5 flex flex-col gap-6">
+<!-- Recent Mentions -->
+<div class="flex flex-col gap-4">
+<p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Recent Mentions</p>
+<!-- Feed Item 1 -->
+<div class="flex flex-col gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="size-8 rounded-full bg-cover bg-center" data-alt="Avatar of a social media user" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCTR4Rcx_iaPU8F-DYsy7wkYZ1AcVxch4LzGCJt1clUGpAdFJmBWVC3pvzX0TfiPBtOi3uzPalqpCSnXI8P_xVixIwU6avCYQMdK923pJQEqOTAkDnEIoN7rHYKT05xXKARQxTCuafxFTDHTbcsvUnYbbrI5Ns6fEZwSfbDDVf_ZQcZSDd7--ZV3pJgE45_QQ40LcTA819cLlgg5B3Ac4dR0_OTF5Ld--ONAjN2TG-9s4UgneQTEYq5tWg5gd66y_WM0IdaigHoR1M');"></div>
+<div>
+<p class="text-xs font-bold text-slate-900 dark:text-white">@makeup_guru</p>
+<p class="text-[10px] text-slate-500">2m ago • Instagram</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-sm">open_in_new</span>
+</div>
+<p class="text-sm text-slate-600 dark:text-slate-300 line-clamp-2">Just tried the new cushion foundation and the texture is unreal! 😍 #glow #beauty</p>
+</div>
+<!-- Feed Item 2 -->
+<div class="flex flex-col gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="size-8 rounded-full bg-cover bg-center" data-alt="Avatar of a male social media user" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAbnzwHndkLuPvsQ2TEj7YtkcIU3gRDiBT6Brg1D6d3PDsYXCBeHQT-tmAVM8QYQjAt23FD0M8arw3Q-yJoTl0LJp7089B_8bNHWcfWtEp5luF9O89xIrNtFHMmT7LyBwgvlHrTQBDEyWq5vcVf6l-wPC6ttIip5jMJAXp62qliKUHqqsJD9dzH4PEdCkVkue84wVVW--8A4uFxK0lvj_m8McNMgB9gjYgFnFBD8tHnKO30S4BnN0S66haKKfTiuGQLBqfxOMz5e9M');"></div>
+<div>
+<p class="text-xs font-bold text-slate-900 dark:text-white">@alex_styles</p>
+<p class="text-[10px] text-slate-500">15m ago • Twitter</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-sm">open_in_new</span>
+</div>
+<p class="text-sm text-slate-600 dark:text-slate-300 line-clamp-2">Are we done with matte lips yet? I'm seeing oils everywhere. Thoughts? 🤔</p>
+</div>
+<!-- Feed Item 3 -->
+<div class="flex flex-col gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="size-8 rounded-full bg-cover bg-center" data-alt="Avatar of a young female user" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB5-dlgQiCx6_teUzVFs0fEZ-lqvZu34G1qCftduDwiyoG0TaWV1TmULjIRFvXiY9NxLTORga3koP-tv91Db8qEkB21GowuJjjQOhC9x92N1PalnIebWagGRv9WSXBmfkMbO_Y9o0S9sA3xjRjepZauqacEJsD5Nb2i3uyvQ6zmlEzXTSZg-jv8qsg_TtXmX0SzD7SjV_FQkt8V7z0WkiS0Te1etxMmGgDbU2kICj-_UytsGNTgXXO11l9QgQCfUUt0myUmGtG3eHc');"></div>
+<div>
+<p class="text-xs font-bold text-slate-900 dark:text-white">@jess_beauty</p>
+<p class="text-[10px] text-slate-500">42m ago • TikTok</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-sm">open_in_new</span>
+</div>
+<p class="text-sm text-slate-600 dark:text-slate-300 line-clamp-2">SPF 50 is a must for the summer look. Don't forget your neck!</p>
+</div>
+</div>
+<hr class="border-border-light dark:border-border-dark"/>
+<!-- Suggested Tags -->
+<div class="flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Suggested Tags</p>
+<span class="material-symbols-outlined text-primary text-sm animate-pulse">auto_awesome</span>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium cursor-pointer hover:bg-primary/20 transition-colors">#MatteFinish</span>
+<span class="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-medium cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">#SummerGlow</span>
+<span class="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-medium cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">#Hydration</span>
+<span class="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-medium cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">#VeganBeauty</span>
+<span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium cursor-pointer hover:bg-primary/20 transition-colors">#SkinBarrier</span>
+</div>
+</div>
+<!-- Ad / Promo Placeholder -->
+<div class="mt-auto bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl p-4 text-white relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl">insights</span>
+</div>
+<p class="text-xs font-bold text-slate-400 mb-1">PRO FEATURE</p>
+<p class="text-sm font-medium mb-3">Unlock predictive analysis for Q3 trends.</p>
+<button class="text-xs bg-primary hover:bg-primary-dark text-white px-3 py-2 rounded-lg transition-colors font-semibold w-full">Upgrade Plan</button>
+</div>
+</div>
+</aside>
+</body></html>

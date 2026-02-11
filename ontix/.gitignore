@@ -1,0 +1,52 @@
+# Environment
+.env
+
+# Config (contains API keys)
+config/*.yaml
+!config/*.example.yaml
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+
+# Generated Proto
+ml_service/ml_pb2.py
+ml_service/ml_pb2_grpc.py
+proto/*.pb.go
+
+# Go binary
+ontix
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test data / sample data (too large)
+testdata/*.json
+sample_data.json
+
+# Logs
+*.log
+logs/

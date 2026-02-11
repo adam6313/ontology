@@ -1,0 +1,507 @@
+{
+  "exp1_topic_overlap": {
+    "n_topics": 19,
+    "similarity_mean": 0.3092857535625302,
+    "similarity_std": 0.05888557498641516,
+    "similarity_max": 0.510145953366236,
+    "similarity_min": 0.18715073329300352,
+    "high_sim_pairs": [
+      {
+        "topic1": "生活風格",
+        "topic2": "日常話題",
+        "similarity": 0.510145953366236
+      },
+      {
+        "topic1": "美食",
+        "topic2": "旅遊",
+        "similarity": 0.48113786976258804
+      },
+      {
+        "topic1": "商業和經濟",
+        "topic2": "教育、工作和學習",
+        "similarity": 0.44663795424250086
+      },
+      {
+        "topic1": "運動",
+        "topic2": "健康",
+        "similarity": 0.4462176435450775
+      },
+      {
+        "topic1": "法律、政治和社會",
+        "topic2": "教育、工作和學習",
+        "similarity": 0.4381346910718211
+      },
+      {
+        "topic1": "生活風格",
+        "topic2": "寵物",
+        "similarity": 0.43399796825980985
+      },
+      {
+        "topic1": "美妝時尚",
+        "topic2": "科技",
+        "similarity": 0.4323159740210311
+      },
+      {
+        "topic1": "美妝時尚",
+        "topic2": "生活風格",
+        "similarity": 0.42635026771743123
+      },
+      {
+        "topic1": "遊戲",
+        "topic2": "科技",
+        "similarity": 0.4197213870164378
+      },
+      {
+        "topic1": "生活風格",
+        "topic2": "成人",
+        "similarity": 0.41808984193640364
+      },
+      {
+        "topic1": "美妝時尚",
+        "topic2": "藝術和娛樂",
+        "similarity": 0.4014569983026419
+      }
+    ],
+    "conclusion": "主題定義分離度良好"
+  },
+  "exp2_classification_clarity": {
+    "total_posts": 101,
+    "ambiguous": {
+      "count": 25,
+      "pct": 24.752475247524753
+    },
+    "moderate": {
+      "count": 22,
+      "pct": 21.782178217821784
+    },
+    "clear": {
+      "count": 54,
+      "pct": 53.46534653465347
+    },
+    "gap_stats": {
+      "mean": 0.061900843553271585,
+      "std": 0.048118603429679455,
+      "median": 0.05849028595187364,
+      "p25": 0.021700131423645908,
+      "p75": 0.08797684575599524
+    },
+    "top1_sim_stats": {
+      "mean": 0.34215459191408704,
+      "std": 0.07843405992662998,
+      "min": 0.12011787442949082,
+      "max": 0.5251607563316079
+    }
+  },
+  "exp3_content_features": {
+    "ambiguous_avg_length": 147.88,
+    "clear_avg_length": 199.47368421052633,
+    "ambiguous_avg_hashtags": 6.72,
+    "clear_avg_hashtags": 9.973684210526315,
+    "language_dist_ambiguous": {
+      "japanese": 6,
+      "chinese": 16,
+      "mixed": 3
+    },
+    "language_dist_clear": {
+      "chinese": 58,
+      "mixed": 11,
+      "japanese": 7
+    },
+    "length_gap_correlation": 0.1996583436839819
+  },
+  "exp4_optimal_clusters": {
+    "k_range": [
+      3,
+      5,
+      6,
+      8,
+      10,
+      12,
+      15,
+      19,
+      25
+    ],
+    "silhouette_scores": [
+      0.06644062285310069,
+      0.07443915451106492,
+      0.06632331576664006,
+      0.05671911641838268,
+      0.06982702098831386,
+      0.06854967731354106,
+      0.07642485896418662,
+      0.07026610711558127,
+      0.10835523733048286
+    ],
+    "best_k": 25,
+    "best_silhouette": 0.10835523733048286,
+    "current_k": 19,
+    "current_silhouette": 0.07026610711558127
+  },
+  "exp5_llm_comparison": {
+    "total_tested": 30,
+    "llm_matches_top1": 8,
+    "llm_matches_top2": 9,
+    "llm_matches_either": 17,
+    "llm_high_confidence": 27,
+    "llm_multi_label": 9,
+    "by_clarity": {
+      "ambiguous": {
+        "tested": 25,
+        "match": 13
+      },
+      "moderate": {
+        "tested": 5,
+        "match": 4
+      },
+      "clear": {
+        "tested": 0,
+        "match": 0
+      }
+    },
+    "details": [
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "日常話題",
+        "embedding_top2": "美食",
+        "llm_primary": "美食",
+        "llm_secondary": "日常話題",
+        "match": true
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "寵物",
+        "embedding_top2": "交通工具",
+        "llm_primary": "生活風格",
+        "llm_secondary": "null",
+        "match": false
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "美食",
+        "embedding_top2": "日常話題",
+        "llm_primary": "美食",
+        "llm_secondary": null,
+        "match": true
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "美妝時尚",
+        "embedding_top2": "美食",
+        "llm_primary": "日常話題",
+        "llm_secondary": null,
+        "match": false
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "旅遊",
+        "embedding_top2": "生活風格",
+        "llm_primary": "日常話題",
+        "llm_secondary": null,
+        "match": false
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "美妝時尚",
+        "embedding_top2": "健康",
+        "llm_primary": "健康",
+        "llm_secondary": "美妝時尚",
+        "match": true
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "美食",
+        "embedding_top2": "旅遊",
+        "llm_primary": "旅遊",
+        "llm_secondary": "生活風格",
+        "match": true
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "運動",
+        "embedding_top2": "生活風格",
+        "llm_primary": "家庭和關係",
+        "llm_secondary": null,
+        "match": false
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "美妝時尚",
+        "embedding_top2": "科技",
+        "llm_primary": "日常話題",
+        "llm_secondary": null,
+        "match": false
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "日常話題",
+        "embedding_top2": "生活風格",
+        "llm_primary": "美妝時尚",
+        "llm_secondary": null,
+        "match": false
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "宗教命理",
+        "embedding_top2": "日常話題",
+        "llm_primary": "家庭和關係",
+        "llm_secondary": null,
+        "match": false
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "美食",
+        "embedding_top2": "美妝時尚",
+        "llm_primary": "美妝時尚",
+        "llm_secondary": null,
+        "match": true
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "日常話題",
+        "embedding_top2": "美妝時尚",
+        "llm_primary": "日常話題",
+        "llm_secondary": "生活風格",
+        "match": true
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "美妝時尚",
+        "embedding_top2": "藝術和娛樂",
+        "llm_primary": "科技",
+        "llm_secondary": null,
+        "match": false
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "日常話題",
+        "embedding_top2": "運動",
+        "llm_primary": "日常話題",
+        "llm_secondary": null,
+        "match": true
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "日常話題",
+        "embedding_top2": "遊戲",
+        "llm_primary": "藝術和娛樂",
+        "llm_secondary": null,
+        "match": false
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "日常話題",
+        "embedding_top2": "旅遊",
+        "llm_primary": "旅遊",
+        "llm_secondary": "日常話題",
+        "match": true
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "美妝時尚",
+        "embedding_top2": "美食",
+        "llm_primary": "美妝時尚",
+        "llm_secondary": "日常話題",
+        "match": true
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "日常話題",
+        "embedding_top2": "生活風格",
+        "llm_primary": "美食",
+        "llm_secondary": "日常話題",
+        "match": false
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "生活風格",
+        "embedding_top2": "日常話題",
+        "llm_primary": "日常話題",
+        "llm_secondary": null,
+        "match": true
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "藝術和娛樂",
+        "embedding_top2": "生活風格",
+        "llm_primary": "藝術和娛樂",
+        "llm_secondary": null,
+        "match": true
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "美妝時尚",
+        "embedding_top2": "寵物",
+        "llm_primary": "藝術和娛樂",
+        "llm_secondary": null,
+        "match": false
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "日常話題",
+        "embedding_top2": "家庭和關係",
+        "llm_primary": "藝術和娛樂",
+        "llm_secondary": "日常話題",
+        "match": false
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "寵物",
+        "embedding_top2": "日常話題",
+        "llm_primary": "寵物",
+        "llm_secondary": null,
+        "match": true
+      },
+      {
+        "clarity": "ambiguous",
+        "embedding_top1": "成人",
+        "embedding_top2": "美食",
+        "llm_primary": "美食",
+        "llm_secondary": null,
+        "match": true
+      },
+      {
+        "clarity": "moderate",
+        "embedding_top1": "健康",
+        "embedding_top2": "運動",
+        "llm_primary": "運動",
+        "llm_secondary": null,
+        "match": true
+      },
+      {
+        "clarity": "moderate",
+        "embedding_top1": "美妝時尚",
+        "embedding_top2": "生活風格",
+        "llm_primary": "美妝時尚",
+        "llm_secondary": null,
+        "match": true
+      },
+      {
+        "clarity": "moderate",
+        "embedding_top1": "健康",
+        "embedding_top2": "日常話題",
+        "llm_primary": "日常話題",
+        "llm_secondary": null,
+        "match": true
+      },
+      {
+        "clarity": "moderate",
+        "embedding_top1": "日常話題",
+        "embedding_top2": "成人",
+        "llm_primary": "健康",
+        "llm_secondary": null,
+        "match": false
+      },
+      {
+        "clarity": "moderate",
+        "embedding_top1": "美食",
+        "embedding_top2": "美妝時尚",
+        "llm_primary": "美食",
+        "llm_secondary": null,
+        "match": true
+      }
+    ]
+  },
+  "exp6_topic_distribution": {
+    "distribution": [
+      {
+        "topic": "美妝時尚",
+        "count": 26,
+        "pct": 25.742574257425744
+      },
+      {
+        "topic": "日常話題",
+        "count": 26,
+        "pct": 25.742574257425744
+      },
+      {
+        "topic": "美食",
+        "count": 23,
+        "pct": 22.772277227722775
+      },
+      {
+        "topic": "旅遊",
+        "count": 6,
+        "pct": 5.9405940594059405
+      },
+      {
+        "topic": "藝術和娛樂",
+        "count": 3,
+        "pct": 2.9702970297029703
+      },
+      {
+        "topic": "生活風格",
+        "count": 3,
+        "pct": 2.9702970297029703
+      },
+      {
+        "topic": "科技",
+        "count": 3,
+        "pct": 2.9702970297029703
+      },
+      {
+        "topic": "健康",
+        "count": 2,
+        "pct": 1.9801980198019802
+      },
+      {
+        "topic": "運動",
+        "count": 2,
+        "pct": 1.9801980198019802
+      },
+      {
+        "topic": "寵物",
+        "count": 2,
+        "pct": 1.9801980198019802
+      },
+      {
+        "topic": "交通工具",
+        "count": 2,
+        "pct": 1.9801980198019802
+      },
+      {
+        "topic": "家庭和關係",
+        "count": 1,
+        "pct": 0.9900990099009901
+      },
+      {
+        "topic": "成人",
+        "count": 1,
+        "pct": 0.9900990099009901
+      },
+      {
+        "topic": "宗教命理",
+        "count": 1,
+        "pct": 0.9900990099009901
+      },
+      {
+        "topic": "商業和經濟",
+        "count": 0,
+        "pct": 0.0
+      },
+      {
+        "topic": "氣候和環境",
+        "count": 0,
+        "pct": 0.0
+      },
+      {
+        "topic": "教育、工作和學習",
+        "count": 0,
+        "pct": 0.0
+      },
+      {
+        "topic": "遊戲",
+        "count": 0,
+        "pct": 0.0
+      },
+      {
+        "topic": "法律、政治和社會",
+        "count": 0,
+        "pct": 0.0
+      }
+    ],
+    "total_posts": 101,
+    "balance_ratio": 0.667163152157276,
+    "top_3_pct": 74.25742574257426,
+    "empty_topics": 5
+  }
+}

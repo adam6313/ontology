@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Topic Correlation Mapping</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#248f6b",
+                        "background-light": "#f9fafa",
+                        "background-dark": "#22252a",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#2d3138",
+                        "text-main": "#121715",
+                        "text-secondary": "#67837a",
+                        "pastel-rose": "#F2DCE2",
+                        "pastel-lavender": "#E1D9F0",
+                        "pastel-mint": "#DDF2EB",
+                        "pastel-peach": "#FAE3D9",
+                        "pastel-blue": "#D9E8FA",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "sans": ["Manrope", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for refined look */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #dde4e2;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #248f6b;
+        }
+        
+        .chord-path {
+            transition: all 0.4s ease;
+            mix-blend-mode: multiply;
+        }
+        .chord-path:hover {
+            opacity: 1;
+            fill: #248f6b;
+            mix-blend-mode: normal;
+            cursor: pointer;
+        }
+        .group/chart:hover .chord-path:not(:hover) {
+            opacity: 0.2;
+        }
+
+        /* Subtle grid pattern for background */
+        .bg-grid-pattern {
+            background-image: radial-gradient(#dde4e2 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-main font-display antialiased overflow-x-hidden">
+<!-- Top Navigation -->
+<nav class="sticky top-0 z-50 flex items-center justify-between border-b border-[#f1f4f3] bg-surface-light/95 backdrop-blur-md px-6 py-3 dark:bg-surface-dark/95 dark:border-gray-800">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-text-main dark:text-white">
+<div class="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">hub</span>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-tight">Topic Correlation</h2>
+</div>
+<!-- Search Bar -->
+<label class="hidden md:flex flex-col min-w-64 max-w-80 h-10 group relative">
+<div class="flex w-full flex-1 items-center rounded-lg bg-[#f1f4f3] dark:bg-gray-800 transition-colors focus-within:ring-2 focus-within:ring-primary/20">
+<div class="text-text-secondary dark:text-gray-400 flex items-center justify-center pl-3">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="flex w-full flex-1 resize-none bg-transparent px-3 py-2 text-sm text-text-main dark:text-white placeholder:text-text-secondary focus:outline-none" placeholder="Search effects or formats..."/>
+<div class="pr-2 text-xs text-text-secondary font-medium">⌘K</div>
+</div>
+</label>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex items-center gap-6">
+<a class="text-text-main dark:text-gray-200 text-sm font-medium hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-primary text-sm font-bold border-b-2 border-primary py-1" href="#">Analysis</a>
+<a class="text-text-main dark:text-gray-200 text-sm font-medium hover:text-primary transition-colors" href="#">Reports</a>
+</div>
+<div class="h-6 w-px bg-gray-200 dark:bg-gray-700"></div>
+<div class="flex items-center gap-3">
+<button class="relative rounded-full bg-gray-100 p-2 text-text-main hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500 border border-white dark:border-gray-900"></span>
+</button>
+<div class="h-9 w-9 overflow-hidden rounded-full ring-2 ring-white shadow-sm dark:ring-gray-700" data-alt="User profile picture showing a smiling professional">
+<img alt="User" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDK0DO-M3zhFZRTqzZTVn-m5jsrkuEinn2v5EboLrsIVUQV2NNWLDhxnrBlRgCFA18oBsWIOUWqraunfcvMFJDSb949bam4JGiIcSi7v9pKTqoO6Z_6i9WEgs41PC6sac5Ds_PkNpqwTADlZTLBVp4Sy3v4Ru8JA_P1dmOpSVhfdpkjilZSTPmJxII1ki7K37oSrwSeAEjjNP_zFAK9JNpfdDDps91jarIOCZJrEDzsnJRQ_z5uXdfRKI1Ye_zU1lm1QeZcp5wcAu8"/>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content Layout -->
+<main class="flex min-h-[calc(100vh-65px)] w-full">
+<!-- Sidebar Filters -->
+<aside class="hidden w-80 shrink-0 flex-col border-r border-[#f1f4f3] bg-surface-light px-6 py-8 dark:bg-surface-dark dark:border-gray-800 lg:flex">
+<div class="flex flex-col gap-8">
+<div>
+<h3 class="mb-4 text-xs font-bold uppercase tracking-wider text-text-secondary">Brand Fingerprint</h3>
+<div class="flex flex-col gap-3">
+<!-- Radio List Items -->
+<label class="group flex cursor-pointer items-center justify-between rounded-xl border border-transparent bg-[#f9fafa] p-3 transition-all hover:border-primary/30 hover:shadow-sm dark:bg-gray-800/50">
+<div class="flex items-center gap-3">
+<div class="relative flex items-center">
+<input checked="" class="peer h-4 w-4 border-2 border-gray-300 text-primary focus:ring-primary/20 dark:border-gray-600 dark:bg-gray-700" name="brand" type="radio"/>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-text-main dark:text-white">L'Oreal</span>
+<span class="text-xs text-text-secondary">Global Market</span>
+</div>
+</div>
+<span class="h-2 w-2 rounded-full bg-green-500"></span>
+</label>
+<label class="group flex cursor-pointer items-center justify-between rounded-xl border border-transparent bg-white p-3 transition-all hover:bg-[#f9fafa] hover:border-primary/30 dark:bg-transparent dark:hover:bg-gray-800">
+<div class="flex items-center gap-3">
+<div class="relative flex items-center">
+<input class="peer h-4 w-4 border-2 border-gray-300 text-primary focus:ring-primary/20 dark:border-gray-600 dark:bg-gray-700" name="brand" type="radio"/>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-medium text-text-main dark:text-gray-300">Maybelline</span>
+<span class="text-xs text-text-secondary">Mass Market</span>
+</div>
+</div>
+</label>
+<label class="group flex cursor-pointer items-center justify-between rounded-xl border border-transparent bg-white p-3 transition-all hover:bg-[#f9fafa] hover:border-primary/30 dark:bg-transparent dark:hover:bg-gray-800">
+<div class="flex items-center gap-3">
+<div class="relative flex items-center">
+<input class="peer h-4 w-4 border-2 border-gray-300 text-primary focus:ring-primary/20 dark:border-gray-600 dark:bg-gray-700" name="brand" type="radio"/>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-medium text-text-main dark:text-gray-300">Fenty Beauty</span>
+<span class="text-xs text-text-secondary">Inclusive</span>
+</div>
+</div>
+</label>
+<label class="group flex cursor-pointer items-center justify-between rounded-xl border border-transparent bg-white p-3 transition-all hover:bg-[#f9fafa] hover:border-primary/30 dark:bg-transparent dark:hover:bg-gray-800">
+<div class="flex items-center gap-3">
+<div class="relative flex items-center">
+<input class="peer h-4 w-4 border-2 border-gray-300 text-primary focus:ring-primary/20 dark:border-gray-600 dark:bg-gray-700" name="brand" type="radio"/>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-medium text-text-main dark:text-gray-300">Glossier</span>
+<span class="text-xs text-text-secondary">DTC</span>
+</div>
+</div>
+</label>
+</div>
+</div>
+<div class="h-px w-full bg-gray-100 dark:bg-gray-800"></div>
+<div>
+<h3 class="mb-4 text-xs font-bold uppercase tracking-wider text-text-secondary">Timeframe</h3>
+<select class="w-full rounded-lg border-none bg-[#f1f4f3] px-4 py-2 text-sm font-medium text-text-main focus:ring-2 focus:ring-primary/20 dark:bg-gray-800 dark:text-white">
+<option>Last Quarter (Q3 2023)</option>
+<option>Year to Date</option>
+<option>Last 12 Months</option>
+</select>
+</div>
+<div class="mt-auto rounded-xl bg-primary/5 p-4 dark:bg-primary/10">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary">auto_graph</span>
+<div>
+<p class="text-xs font-bold text-primary">Insight Alert</p>
+<p class="mt-1 text-xs leading-relaxed text-text-secondary">Hydration claims have increased by 24% in liquid foundations this quarter.</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Workspace -->
+<div class="flex-1 overflow-y-auto bg-background-light p-4 dark:bg-background-dark md:p-8">
+<div class="mx-auto flex max-w-6xl flex-col gap-6">
+<!-- Page Header -->
+<header class="flex flex-wrap items-end justify-between gap-4">
+<div class="flex flex-col gap-1">
+<h1 class="text-3xl font-black tracking-tight text-text-main dark:text-white md:text-4xl">Cross-Topic Correlation Map</h1>
+<p class="text-base text-text-secondary dark:text-gray-400">Visualizing relationship mapping between product formats and effects.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex h-9 items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 text-sm font-medium text-text-main shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                            Filter View
+                        </button>
+<button class="flex h-9 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-medium text-white shadow-sm transition-colors hover:bg-primary/90">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                            Export Data
+                        </button>
+</div>
+</header>
+<!-- Chips / Legend -->
+<div class="flex flex-wrap items-center gap-2">
+<span class="mr-2 text-xs font-bold uppercase tracking-wider text-text-secondary">Active Topics:</span>
+<div class="flex cursor-pointer items-center gap-2 rounded-full border border-pastel-rose bg-pastel-rose/30 px-3 py-1 text-xs font-semibold text-text-main transition-transform hover:scale-105">
+<span class="h-2 w-2 rounded-full bg-[#D68C9F]"></span>
+                        Whitening
+                    </div>
+<div class="flex cursor-pointer items-center gap-2 rounded-full border border-pastel-lavender bg-pastel-lavender/30 px-3 py-1 text-xs font-semibold text-text-main transition-transform hover:scale-105">
+<span class="h-2 w-2 rounded-full bg-[#9B89C2]"></span>
+                        Anti-Aging
+                    </div>
+<div class="flex cursor-pointer items-center gap-2 rounded-full border border-pastel-mint bg-pastel-mint/30 px-3 py-1 text-xs font-semibold text-text-main transition-transform hover:scale-105">
+<span class="h-2 w-2 rounded-full bg-[#6EBBA6]"></span>
+                        Hydration
+                    </div>
+<div class="flex cursor-pointer items-center gap-2 rounded-full border border-pastel-peach bg-pastel-peach/30 px-3 py-1 text-xs font-semibold text-text-main transition-transform hover:scale-105">
+<span class="h-2 w-2 rounded-full bg-[#E8A689]"></span>
+                        Pore-blurring
+                    </div>
+<div class="flex cursor-pointer items-center gap-2 rounded-full border border-pastel-blue bg-pastel-blue/30 px-3 py-1 text-xs font-semibold text-text-main transition-transform hover:scale-105">
+<span class="h-2 w-2 rounded-full bg-[#8EB1E3]"></span>
+                        Formats
+                    </div>
+</div>
+<!-- Visualization Container -->
+<div class="relative grid min-h-[500px] w-full grid-cols-1 gap-6 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5 dark:bg-surface-dark dark:ring-white/10 lg:grid-cols-3 lg:p-10">
+<!-- SVG Chart Area (Spans 2 columns on desktop) -->
+<div class="relative flex items-center justify-center lg:col-span-2 group/chart">
+<!-- Background subtle grid -->
+<div class="absolute inset-0 bg-grid-pattern opacity-30"></div>
+<!-- Simulated Circular Chord Diagram -->
+<!-- 
+                             Note: This SVG is handcrafted to represent a chord diagram. 
+                             It uses bezier curves to connect arcs on a circle.
+                        -->
+<svg class="w-full max-w-[500px] animate-in fade-in duration-700" viewbox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<lineargradient id="grad1" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#F2DCE2;stop-opacity:0.8"></stop>
+<stop offset="100%" style="stop-color:#9B89C2;stop-opacity:0.8"></stop>
+</lineargradient>
+</defs>
+<!-- Outer Arcs (Categories) -->
+<!-- Whitening (Top Left) -->
+<path d="M 150 100 A 250 250 0 0 1 290 50" fill="none" stroke="#D68C9F" stroke-linecap="round" stroke-width="12"></path>
+<text fill="#67837a" font-family="Manrope" font-size="12" font-weight="bold" x="180" y="80">WHITENING</text>
+<!-- Anti-Aging (Top Right) -->
+<path d="M 310 50 A 250 250 0 0 1 450 100" fill="none" stroke="#9B89C2" stroke-linecap="round" stroke-width="12"></path>
+<text fill="#67837a" font-family="Manrope" font-size="12" font-weight="bold" x="360" y="80">ANTI-AGING</text>
+<!-- Hydration (Right) -->
+<path d="M 500 150 A 250 250 0 0 1 500 450" fill="none" stroke="#6EBBA6" stroke-linecap="round" stroke-width="12"></path>
+<text fill="#67837a" font-family="Manrope" font-size="12" font-weight="bold" transform="rotate(90 520 300)" x="520" y="300">HYDRATION</text>
+<!-- Formats (Bottom) -->
+<path d="M 450 500 A 250 250 0 0 1 150 500" fill="none" stroke="#8EB1E3" stroke-linecap="round" stroke-width="12"></path>
+<text fill="#67837a" font-family="Manrope" font-size="12" font-weight="bold" x="270" y="540">FORMATS</text>
+<!-- Pore-Blurring (Left) -->
+<path d="M 100 450 A 250 250 0 0 1 100 150" fill="none" stroke="#E8A689" stroke-linecap="round" stroke-width="12"></path>
+<text fill="#67837a" font-family="Manrope" font-size="12" font-weight="bold" transform="rotate(-90 60 300)" x="60" y="300">PORE-BLUR</text>
+<!-- Connections (Chords) -->
+<!-- Hydration <-> Liquid Foundation (Bottom Right) -->
+<path class="chord-path" d="M 500 200 Q 300 300 350 500" fill="none" stroke="#6EBBA6" stroke-opacity="0.3" stroke-width="40"></path>
+<!-- Anti-Aging <-> Serum (Bottom Center) -->
+<path class="chord-path" d="M 380 70 Q 300 300 300 500" fill="none" stroke="#9B89C2" stroke-opacity="0.3" stroke-width="25"></path>
+<!-- Whitening <-> Powder (Bottom Left) -->
+<path class="chord-path" d="M 220 70 Q 300 300 200 500" fill="none" stroke="#D68C9F" stroke-opacity="0.2" stroke-width="15"></path>
+<!-- Pore-Blur <-> Primer (Bottom Leftish) -->
+<path class="chord-path" d="M 100 250 Q 200 350 250 500" fill="none" stroke="#E8A689" stroke-opacity="0.4" stroke-width="30"></path>
+<!-- Cross link: Hydration <-> Anti-Aging -->
+<path class="chord-path" d="M 500 350 Q 400 200 400 80" fill="none" stroke="#url(#grad1)" stroke-opacity="0.15" stroke-width="10"></path>
+<!-- Center Label -->
+<circle cx="300" cy="300" fill="white" r="40" stroke="#f1f4f3" stroke-width="1"></circle>
+<text fill="#248f6b" font-family="Manrope" font-size="10" font-weight="bold" text-anchor="middle" x="300" y="305">1,240 DP</text>
+</svg>
+<!-- Hover Info Card (Absolute positioning simulated) -->
+<div class="absolute bottom-4 left-4 hidden rounded-lg border border-gray-100 bg-white/90 p-3 shadow-lg backdrop-blur-sm lg:block dark:border-gray-700 dark:bg-gray-800/90">
+<div class="flex items-center gap-2">
+<div class="h-2 w-2 rounded-full bg-primary animate-pulse"></div>
+<span class="text-xs font-medium text-text-main dark:text-white">Hover segments to isolate paths</span>
+</div>
+</div>
+</div>
+<!-- Details Panel (Right side) -->
+<div class="flex flex-col gap-6 lg:border-l lg:border-gray-100 lg:pl-6 dark:border-gray-700">
+<!-- Selected Metric Card -->
+<div class="rounded-xl bg-[#f9fafa] p-5 dark:bg-gray-800">
+<h4 class="mb-2 flex items-center gap-2 text-sm font-bold text-text-secondary">
+<span class="material-symbols-outlined text-[18px]">show_chart</span>
+                                Strongest Correlation
+                            </h4>
+<div class="mb-4">
+<p class="text-2xl font-black text-text-main dark:text-white">Hydration</p>
+<p class="text-sm font-medium text-text-secondary">linked to</p>
+<p class="text-xl font-bold text-primary">Liquid Foundation</p>
+</div>
+<div class="h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+<div class="h-full w-[85%] rounded-full bg-primary transition-all duration-1000 ease-out"></div>
+</div>
+<div class="mt-2 flex justify-between text-xs font-medium text-text-secondary">
+<span>Correlation Strength</span>
+<span>85%</span>
+</div>
+</div>
+<!-- Secondary Metrics -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between border-b border-gray-100 pb-3 dark:border-gray-700">
+<div class="flex items-center gap-3">
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-pastel-lavender/40 text-xs font-bold text-[#6D5A92]">2</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-text-main dark:text-white">Anti-Aging</span>
+<span class="text-xs text-text-secondary">Trending in Serums</span>
+</div>
+</div>
+<span class="text-sm font-bold text-primary">+12%</span>
+</div>
+<div class="flex items-center justify-between border-b border-gray-100 pb-3 dark:border-gray-700">
+<div class="flex items-center gap-3">
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-pastel-peach/40 text-xs font-bold text-[#C76F4B]">3</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-text-main dark:text-white">Pore-blurring</span>
+<span class="text-xs text-text-secondary">Primers &amp; Powders</span>
+</div>
+</div>
+<span class="text-sm font-bold text-text-secondary">-4%</span>
+</div>
+</div>
+<!-- Action Button -->
+<div class="mt-auto">
+<button class="flex w-full items-center justify-center gap-2 rounded-lg bg-text-main py-3 text-sm font-bold text-white transition-all hover:bg-black dark:bg-white dark:text-black dark:hover:bg-gray-200">
+                                View Detailed Report
+                                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Bottom Data Grid -->
+<div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+<div class="rounded-xl border border-gray-100 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-surface-dark">
+<p class="text-xs font-medium text-text-secondary">Total Data Points</p>
+<p class="mt-1 text-xl font-black text-text-main dark:text-white">12,450</p>
+</div>
+<div class="rounded-xl border border-gray-100 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-surface-dark">
+<p class="text-xs font-medium text-text-secondary">Topics Tracked</p>
+<p class="mt-1 text-xl font-black text-text-main dark:text-white">24</p>
+</div>
+<div class="rounded-xl border border-gray-100 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-surface-dark">
+<p class="text-xs font-medium text-text-secondary">Brand Overlap</p>
+<p class="mt-1 text-xl font-black text-text-main dark:text-white">68%</p>
+</div>
+<div class="rounded-xl border border-gray-100 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-surface-dark">
+<p class="text-xs font-medium text-text-secondary">Update Frequency</p>
+<p class="mt-1 text-xl font-black text-text-main dark:text-white">Daily</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

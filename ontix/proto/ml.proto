@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package ml;
+
+option go_package = "github.com/ikala/ontix/pkg/grpc/mlpb";
+
+// ============================================
+// Embedding Service
+// ============================================
+
+service EmbeddingService {
+    // 單篇文字 Embedding
+    rpc Embed(EmbedRequest) returns (EmbedResponse);
+
+    // 批次文字 Embedding
+    rpc BatchEmbed(BatchEmbedRequest) returns (BatchEmbedResponse);
+}
+
+message EmbedRequest {
+    string text = 1;
+}
+
+message EmbedResponse {
+    repeated float embedding = 1;
+}
+
+message BatchEmbedRequest {
+    repeated string texts = 1;
+}
+
+message BatchEmbedResponse {
+    repeated Embedding embeddings = 1;
+}
+
+// ============================================
+// Clustering Service
+// ============================================
+
+service ClusteringService {
+    // 執行 HDBSCAN 聚類
+    rpc RunClustering(ClusteringRequest) returns (ClusteringResponse);
+}
+
+message ClusteringRequest {
+    repeated Embedding embeddings = 1;
+    repeated string texts = 2;  // 用於 LLM 命名
+    int32 min_cluster_size = 3; // 預設 50
+}
+
+message ClusteringResponse {
+    repeated Cluster clusters = 1;
+    int32 noise_count = 2;
+}
+
+// ============================================
+// Common Messages
+// ============================================
+
+message Embedding {
+    repeated float values = 1;
+}
+
+message Cluster {
+    Embedding centroid = 1;
+    int32 size = 2;
+    string name = 3;
+    repeated string keywords = 4;
+}

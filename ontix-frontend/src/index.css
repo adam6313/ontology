@@ -1,0 +1,320 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #00a38d;
+  --color-primary-dark: #008573;
+  --color-secondary: #5e8d87;
+  --color-background-light: #fafafa;
+  --color-background-dark: #1a1c1e;
+  --color-surface-light: #ffffff;
+  --color-surface-dark: #25282a;
+  --color-border-light: #e5e7eb;
+  --color-border-dark: #374151;
+  --color-glass: rgba(255, 255, 255, 0.60);
+  --color-glass-border: rgba(255, 255, 255, 0.50);
+  --color-glass-hover: rgba(255, 255, 255, 0.75);
+  --font-family-display: "Manrope", sans-serif;
+}
+
+body {
+  font-family: var(--font-family-display);
+  margin: 0;
+  background: #fafafa;
+  min-height: 100vh;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes pulseDot {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.4);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatDelayed {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes ripplePing {
+  0% { transform: scale(1); opacity: 0.4; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* AI rainbow border */
+@keyframes rainbowBorder {
+  0%   {
+    border-color: #a855f7;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.4), 0 0 60px rgba(168, 85, 247, 0.15), inset 0 0 30px rgba(168, 85, 247, 0.05);
+  }
+  16%  {
+    border-color: #ec4899;
+    box-shadow: 0 0 20px rgba(236, 72, 153, 0.4), 0 0 60px rgba(236, 72, 153, 0.15), inset 0 0 30px rgba(236, 72, 153, 0.05);
+  }
+  33%  {
+    border-color: #f97316;
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.4), 0 0 60px rgba(249, 115, 22, 0.15), inset 0 0 30px rgba(249, 115, 22, 0.05);
+  }
+  50%  {
+    border-color: #eab308;
+    box-shadow: 0 0 20px rgba(234, 179, 8, 0.4), 0 0 60px rgba(234, 179, 8, 0.15), inset 0 0 30px rgba(234, 179, 8, 0.05);
+  }
+  66%  {
+    border-color: #22c55e;
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.4), 0 0 60px rgba(34, 197, 94, 0.15), inset 0 0 30px rgba(34, 197, 94, 0.05);
+  }
+  83%  {
+    border-color: #3b82f6;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4), 0 0 60px rgba(59, 130, 246, 0.15), inset 0 0 30px rgba(59, 130, 246, 0.05);
+  }
+  100% {
+    border-color: #a855f7;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.4), 0 0 60px rgba(168, 85, 247, 0.15), inset 0 0 30px rgba(168, 85, 247, 0.05);
+  }
+}
+
+.ai-rainbow-border {
+  animation: rainbowBorder 3s linear infinite;
+  border-width: 2px;
+  border-style: solid;
+}
+
+/* Soft rainbow — lighter, dreamy version for inputs */
+@keyframes rainbowBorderSoft {
+  0%   { border-color: rgba(168, 85, 247, 0.35); box-shadow: 0 0 16px rgba(168, 85, 247, 0.12); }
+  16%  { border-color: rgba(236, 72, 153, 0.30); box-shadow: 0 0 16px rgba(236, 72, 153, 0.10); }
+  33%  { border-color: rgba(249, 115, 22, 0.30); box-shadow: 0 0 16px rgba(249, 115, 22, 0.10); }
+  50%  { border-color: rgba(234, 179, 8, 0.30);  box-shadow: 0 0 16px rgba(234, 179, 8, 0.10);  }
+  66%  { border-color: rgba(34, 197, 94, 0.30);  box-shadow: 0 0 16px rgba(34, 197, 94, 0.10);  }
+  83%  { border-color: rgba(59, 130, 246, 0.30); box-shadow: 0 0 16px rgba(59, 130, 246, 0.10); }
+  100% { border-color: rgba(168, 85, 247, 0.35); box-shadow: 0 0 16px rgba(168, 85, 247, 0.12); }
+}
+
+.ai-rainbow-border-soft {
+  animation: rainbowBorderSoft 4s linear infinite;
+  border-width: 2px;
+  border-style: solid;
+}
+
+/* Liquid Glass — AI Summary */
+.liquid-glass {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(255, 255, 255, 0.65) 40%,
+    rgba(248, 246, 255, 0.55) 60%,
+    rgba(255, 255, 255, 0.75) 100%
+  );
+  backdrop-filter: blur(24px) saturate(1.3);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.70);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.25),
+    0 8px 32px -8px rgba(100, 80, 160, 0.06),
+    0 2px 8px -2px rgba(0, 0, 0, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.80),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Top specular highlight */
+.liquid-glass::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.50) 0%,
+    rgba(255, 255, 255, 0.10) 40%,
+    transparent 100%
+  );
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Subtle iridescent refraction */
+.liquid-glass::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    from 180deg at 50% 50%,
+    rgba(168, 85, 247, 0.02) 0deg,
+    rgba(59, 130, 246, 0.02) 72deg,
+    rgba(34, 197, 94, 0.015) 144deg,
+    rgba(249, 115, 22, 0.015) 216deg,
+    rgba(236, 72, 153, 0.02) 288deg,
+    rgba(168, 85, 247, 0.02) 360deg
+  );
+  /* animation: glassRefraction 8s linear infinite; */
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes glassRefraction {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.liquid-glass > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Loading state: liquid glass + rainbow border */
+.liquid-glass-loading {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.80) 0%,
+    rgba(250, 248, 255, 0.60) 50%,
+    rgba(255, 255, 255, 0.70) 100%
+  );
+  backdrop-filter: blur(24px) saturate(1.3);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
+  animation: rainbowBorder 3s linear infinite;
+  border-width: 2px;
+  border-style: solid;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 8px 32px -8px rgba(100, 80, 160, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.70);
+}
+
+.liquid-glass-loading::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.40) 0%,
+    transparent 100%
+  );
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.liquid-glass-loading > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* AI summary fade-in */
+@keyframes aiFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* AI loading dots */
+@keyframes aiDots {
+  0%       { content: ''; }
+  25%      { content: '.'; }
+  50%      { content: '..'; }
+  75%      { content: '...'; }
+  100%     { content: ''; }
+}
+
+.ai-loading-dots::after {
+  content: '';
+  animation: aiDots 1.5s steps(1) infinite;
+}
+
+/* AI rainbow text */
+@keyframes rainbowText {
+  0%   { color: #a855f7; }
+  16%  { color: #ec4899; }
+  33%  { color: #f97316; }
+  50%  { color: #eab308; }
+  66%  { color: #22c55e; }
+  83%  { color: #3b82f6; }
+  100% { color: #a855f7; }
+}
+
+.ai-rainbow-text {
+  animation: rainbowText 3s linear infinite;
+}
+
+.ai-summary-enter {
+  animation: aiFadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.ai-summary-enter > *:nth-child(1) { animation-delay: 0s; }
+.ai-summary-enter > *:nth-child(2) { animation-delay: 0.08s; }
+.ai-summary-enter > *:nth-child(3) { animation-delay: 0.16s; }
+.ai-summary-enter > *:nth-child(4) { animation-delay: 0.24s; }
+.ai-summary-enter > *:nth-child(5) { animation-delay: 0.32s; }
+
+.ai-summary-enter > * {
+  animation: aiFadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}

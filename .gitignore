@@ -1,0 +1,47 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+
+# Node
+node_modules/
+dist/
+dist-ssr/
+*.local
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+ENV/
+
+# Go
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+
+# Config (contains API keys)
+ontix/config/*.yaml
+!ontix/config/*.example.yaml
+
+# Generated
+ontix/proto/*.pb.go
+ontix/ml_service/ml_pb2.py
+ontix/ml_service/ml_pb2_grpc.py
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Claude
+.claude/
