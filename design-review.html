@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ontix — Design Review</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { display: ['Manrope', 'sans-serif'] },
+      colors: {
+        primary: { DEFAULT: '#00a38d', dark: '#008573' },
+        secondary: '#5e8d87',
+        'surface-light': '#ffffff',
+        'background-light': '#fafafa',
+        'border-light': '#e5e7eb',
+      }
+    }
+  }
+}
+</script>
+<style>
+* { font-family: 'Manrope', sans-serif; }
+.mso { font-family: 'Material Symbols Outlined'; font-size: 20px; }
+.mso-fill { font-variation-settings: 'FILL' 1; }
+.page { display: none; }
+.page.active { display: block; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes rainbowBorder {
+  0%,100% { border-color: #a855f7; box-shadow: 0 0 20px rgba(168,85,247,0.4), 0 0 60px rgba(168,85,247,0.15), inset 0 0 30px rgba(168,85,247,0.05); }
+  16% { border-color: #ec4899; box-shadow: 0 0 20px rgba(236,72,153,0.4), 0 0 60px rgba(236,72,153,0.15), inset 0 0 30px rgba(236,72,153,0.05); }
+  33% { border-color: #f97316; box-shadow: 0 0 20px rgba(249,115,22,0.4), 0 0 60px rgba(249,115,22,0.15), inset 0 0 30px rgba(249,115,22,0.05); }
+  50% { border-color: #eab308; box-shadow: 0 0 20px rgba(234,179,8,0.4), 0 0 60px rgba(234,179,8,0.15), inset 0 0 30px rgba(234,179,8,0.05); }
+  66% { border-color: #22c55e; box-shadow: 0 0 20px rgba(34,197,94,0.4), 0 0 60px rgba(34,197,94,0.15), inset 0 0 30px rgba(34,197,94,0.05); }
+  83% { border-color: #3b82f6; box-shadow: 0 0 20px rgba(59,130,246,0.4), 0 0 60px rgba(59,130,246,0.15), inset 0 0 30px rgba(59,130,246,0.05); }
+}
+.liquid-glass {
+  background: linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.65) 40%, rgba(248,246,255,0.55) 60%, rgba(255,255,255,0.75) 100%);
+  backdrop-filter: blur(24px) saturate(1.3);
+  border: 1px solid rgba(255,255,255,0.70);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.25), 0 8px 32px -8px rgba(100,80,160,0.06), 0 2px 8px -2px rgba(0,0,0,0.03), inset 0 1px 0 rgba(255,255,255,0.80), inset 0 -1px 0 rgba(255,255,255,0.15);
+  position: relative; overflow: hidden;
+}
+.liquid-glass::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.50) 0%, rgba(255,255,255,0.10) 40%, transparent 100%);
+  border-radius: inherit; pointer-events: none; z-index: 0;
+}
+.liquid-glass::after {
+  content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+  background: conic-gradient(from 180deg at 50% 50%, rgba(168,85,247,0.02) 0deg, rgba(59,130,246,0.02) 72deg, rgba(34,197,94,0.015) 144deg, rgba(249,115,22,0.015) 216deg, rgba(236,72,153,0.02) 288deg, rgba(168,85,247,0.02) 360deg);
+  pointer-events: none; z-index: 0;
+}
+.liquid-glass > * { position: relative; z-index: 1; }
+.liquid-glass-loading {
+  background: linear-gradient(135deg, rgba(255,255,255,0.80) 0%, rgba(250,248,255,0.60) 50%, rgba(255,255,255,0.70) 100%);
+  backdrop-filter: blur(24px) saturate(1.3);
+  animation: rainbowBorder 3s linear infinite; border-width: 2px; border-style: solid;
+  position: relative; overflow: hidden;
+  box-shadow: 0 8px 32px -8px rgba(100,80,160,0.12), inset 0 1px 0 rgba(255,255,255,0.70);
+}
+@keyframes rainbowBorderSoft {
+  0%,100% { border-color: rgba(168,85,247,0.35); box-shadow: 0 0 16px rgba(168,85,247,0.12); }
+  16% { border-color: rgba(236,72,153,0.30); box-shadow: 0 0 16px rgba(236,72,153,0.10); }
+  33% { border-color: rgba(249,115,22,0.30); box-shadow: 0 0 16px rgba(249,115,22,0.10); }
+  50% { border-color: rgba(234,179,8,0.30); box-shadow: 0 0 16px rgba(234,179,8,0.10); }
+  66% { border-color: rgba(34,197,94,0.30); box-shadow: 0 0 16px rgba(34,197,94,0.10); }
+  83% { border-color: rgba(59,130,246,0.30); box-shadow: 0 0 16px rgba(59,130,246,0.10); }
+}
+.ai-rainbow-border-soft { animation: rainbowBorderSoft 4s linear infinite; border-width: 2px; border-style: solid; }
+@keyframes aiFadeIn {
+  from { opacity: 0; transform: translateY(6px); filter: blur(4px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+.ai-summary-enter > * { animation: aiFadeIn 0.5s cubic-bezier(0.22,1,0.36,1) both; }
+.ai-summary-enter > *:nth-child(1) { animation-delay: 0s; }
+.ai-summary-enter > *:nth-child(2) { animation-delay: 0.08s; }
+.ai-summary-enter > *:nth-child(3) { animation-delay: 0.16s; }
+.ai-summary-enter > *:nth-child(4) { animation-delay: 0.24s; }
+</style>
+</head>
+<body class="bg-background-light text-slate-800">
+<div class="h-screen flex overflow-hidden">
+
+<!-- ========== SIDEBAR ========== -->
+<aside id="sidebar" class="bg-surface-light border-r border-gray-100 flex flex-col justify-between shrink-0 transition-all duration-300 ease-in-out w-64">
+  <div class="flex flex-col p-3 gap-6">
+    <div class="flex items-center gap-3 px-2">
+      <svg width="40" height="40" viewBox="0 0 200 200" class="shrink-0 rounded-[8px]" style="box-shadow:0 10px 20px rgba(42,157,143,0.35)">
+        <rect width="200" height="200" rx="40" ry="40" fill="#2A9D8F"/>
+        <circle cx="125" cy="75" r="40" fill="white"/>
+        <circle cx="55" cy="115" r="28" fill="white"/>
+        <circle cx="108" cy="135" r="18" fill="white"/>
+      </svg>
+      <div class="flex flex-col overflow-hidden sidebar-label">
+        <h1 class="text-lg font-bold leading-none tracking-tight">Ontix</h1>
+        <span class="text-xs text-secondary font-medium">Analytics AI</span>
+      </div>
+    </div>
+    <nav class="flex flex-col gap-1" id="nav">
+      <a href="#" data-page="pulse" class="nav-item active flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium bg-primary/15 text-primary">
+        <span class="mso mso-fill">monitoring</span><span class="truncate sidebar-label">Overview</span>
+      </a>
+      <a href="#" data-page="scenarios" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-slate-600 hover:bg-[#f0f5f4]">
+        <span class="mso">explore</span><span class="truncate sidebar-label">Scenarios</span>
+      </a>
+      <a href="#" data-page="search" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-slate-600 hover:bg-[#f0f5f4]">
+        <span class="mso">search</span><span class="truncate sidebar-label">Search</span>
+      </a>
+      <a href="#" data-page="graph" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-slate-600 hover:bg-[#f0f5f4]">
+        <span class="mso">hub</span><span class="truncate sidebar-label">Graph</span>
+      </a>
+      <a href="#" data-page="compare" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-slate-600 hover:bg-[#f0f5f4]">
+        <span class="mso">compare_arrows</span><span class="truncate sidebar-label">Compare</span>
+      </a>
+      <a href="#" data-page="inbox" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-slate-600 hover:bg-[#f0f5f4]">
+        <span class="mso">inbox</span><span class="truncate sidebar-label">Inbox</span>
+        <span class="ml-auto bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center leading-none sidebar-label">5</span>
+      </a>
+    </nav>
+    <div class="px-3 mt-2 pt-2 border-t border-gray-100">
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-amber-700 hover:bg-amber-50 transition-colors">
+        <span class="mso mso-fill text-amber-500">star</span>
+        <span class="truncate sidebar-label">Watchlist</span>
+        <span class="ml-auto bg-amber-100 text-amber-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center leading-none sidebar-label">3</span>
+      </a>
+    </div>
+  </div>
+  <div class="flex flex-col">
+    <div class="px-3 pb-2">
+      <button onclick="toggleSidebar()" class="flex items-center justify-center size-9 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-[#f0f5f4] transition-colors">
+        <span class="mso transition-transform duration-300" id="collapse-icon">chevron_left</span>
+      </button>
+    </div>
+    <div class="p-3 border-t border-gray-100">
+      <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-[#f0f5f4] cursor-pointer transition-colors">
+        <div class="size-9 rounded-full bg-gradient-to-br from-primary to-secondary shrink-0"></div>
+        <div class="flex flex-col overflow-hidden sidebar-label">
+          <p class="text-sm font-semibold truncate">Admin User</p>
+          <p class="text-xs text-secondary truncate">Product Lead</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ========== MAIN ========== -->
+<main class="flex-1 flex flex-col h-full overflow-hidden relative">
+
+<!-- ============================================================ -->
+<!-- PAGE: PULSE (Overview) -->
+<!-- ============================================================ -->
+<div id="page-pulse" class="page active flex flex-col h-full overflow-hidden">
+
+  <!-- Sticky Header -->
+  <div class="w-full bg-surface-light border-b border-border-light px-8 py-6 z-10 shrink-0">
+    <div class="max-w-5xl mx-auto w-full flex flex-col gap-6">
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <h2 class="text-3xl font-bold tracking-tight text-slate-900 mb-1">Market Pulse</h2>
+          <p class="text-slate-500">Real-time analysis of brand trends and consumer sentiment.</p>
+        </div>
+        <div class="flex bg-slate-100 rounded-lg p-0.5 text-sm shrink-0">
+          <button class="px-3 py-1.5 rounded-md text-slate-500 hover:text-slate-700">1w</button>
+          <button class="px-3 py-1.5 rounded-md bg-white shadow-sm font-semibold text-slate-800">4w</button>
+          <button class="px-3 py-1.5 rounded-md text-slate-500 hover:text-slate-700">12w</button>
+          <button class="px-3 py-1.5 rounded-md text-slate-500 hover:text-slate-700">All</button>
+        </div>
+      </div>
+      <!-- AI Search Bar -->
+      <div class="relative group">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-primary">
+          <span class="mso">auto_awesome</span>
+        </div>
+        <input type="text" placeholder="Ask about trends..." class="w-full h-14 pl-12 pr-20 rounded-xl bg-slate-50 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 placeholder:text-slate-400 transition-all shadow-sm group-hover:shadow-md text-sm outline-none">
+        <div class="absolute inset-y-0 right-2 flex items-center gap-2">
+          <kbd class="bg-white border border-slate-200 rounded-lg px-2 py-1 text-xs font-medium text-slate-500 shadow-sm">⌘ K</kbd>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scrollable Content -->
+  <div class="flex-1 overflow-y-auto p-8">
+    <div class="max-w-5xl mx-auto w-full flex flex-col gap-8 pb-10" style="animation: fadeSlideIn 200ms ease-out">
+
+      <!-- Signal Banner -->
+      <div class="rounded-2xl border px-6 py-4 flex items-center gap-4 bg-red-50 border-red-100">
+        <div class="size-10 rounded-xl flex items-center justify-center shrink-0 bg-red-100">
+          <span class="mso text-[20px] text-red-600">warning</span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-bold text-red-800">5 signals need attention</p>
+          <a href="#" data-page="inbox" class="text-sm hover:underline truncate block text-red-700">Taiwan Mobile: NCC satisfaction survey — TWM dropped to 3rd</a>
+        </div>
+        <a href="#" data-page="inbox" class="text-sm font-semibold whitespace-nowrap shrink-0 text-red-700 hover:text-red-900">View all →</a>
+      </div>
+
+      <!-- Key Changes — 3-col -->
+      <section>
+        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2 mb-4">
+          <span class="mso text-primary mso-fill">star</span>
+          Key Changes
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Top Movers -->
+          <div class="bg-surface-light rounded-2xl border border-border-light shadow-sm p-5">
+            <h4 class="text-sm font-semibold text-slate-500 mb-3 flex items-center gap-1.5">
+              <span class="mso text-[16px] text-emerald-500">moving</span>
+              Top Movers
+            </h4>
+            <div class="flex flex-col gap-3">
+              <a href="#" data-page="entity" class="flex items-center gap-3 group">
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-bold text-slate-900 truncate group-hover:text-primary transition-colors">Perplexity Pro</p>
+                  <p class="text-xs text-slate-400">38 mentions</p>
+                </div>
+                <div class="shrink-0 flex items-center gap-1">
+                  <svg width="48" height="20" viewBox="0 0 48 20"><polyline points="0,18 8,16 16,14 24,11 32,8 40,5 48,3" fill="none" stroke="#10b981" stroke-width="1.5"/></svg>
+                  <span class="text-xs font-bold text-emerald-600">+45%</span>
+                </div>
+              </a>
+              <a href="#" data-page="entity" class="flex items-center gap-3 group">
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-bold text-slate-900 truncate group-hover:text-primary transition-colors">Taiwan Mobile</p>
+                  <p class="text-xs text-slate-400">284 mentions</p>
+                </div>
+                <div class="shrink-0 flex items-center gap-1">
+                  <svg width="48" height="20" viewBox="0 0 48 20"><polyline points="0,4 8,6 16,8 24,10 32,12 40,15 48,17" fill="none" stroke="#ef4444" stroke-width="1.5"/></svg>
+                  <span class="text-xs font-bold text-red-600">-18%</span>
+                </div>
+              </a>
+              <a href="#" data-page="entity" class="flex items-center gap-3 group">
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-bold text-slate-900 truncate group-hover:text-primary transition-colors">Travel & Roaming</p>
+                  <p class="text-xs text-slate-400">156 mentions</p>
+                </div>
+                <div class="shrink-0 flex items-center gap-1">
+                  <svg width="48" height="20" viewBox="0 0 48 20"><polyline points="0,16 8,14 16,11 24,9 32,7 40,5 48,3" fill="none" stroke="#10b981" stroke-width="1.5"/></svg>
+                  <span class="text-xs font-bold text-emerald-600">+22%</span>
+                </div>
+              </a>
+            </div>
+          </div>
+          <!-- Lowest Sentiment -->
+          <div class="bg-surface-light rounded-2xl border border-border-light shadow-sm p-5">
+            <h4 class="text-sm font-semibold text-slate-500 mb-3 flex items-center gap-1.5">
+              <span class="mso text-[16px] text-red-500">sentiment_dissatisfied</span>
+              Lowest Sentiment
+            </h4>
+            <div class="flex flex-col gap-3">
+              <a href="#" data-page="entity" class="flex items-center gap-3 group">
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-bold text-slate-900 truncate group-hover:text-primary transition-colors">5G Unlimited Plan</p>
+                  <p class="text-xs text-slate-400">product</p>
+                </div>
+                <span class="text-sm font-bold text-red-600">5.5</span>
+              </a>
+              <a href="#" data-page="entity" class="flex items-center gap-3 group">
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-bold text-slate-900 truncate group-hover:text-primary transition-colors">Taiwan Mobile</p>
+                  <p class="text-xs text-slate-400">brand</p>
+                </div>
+                <span class="text-sm font-bold text-amber-600">6.9</span>
+              </a>
+              <a href="#" data-page="entity" class="flex items-center gap-3 group">
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-bold text-slate-900 truncate group-hover:text-primary transition-colors">International Roaming</p>
+                  <p class="text-xs text-slate-400">product</p>
+                </div>
+                <span class="text-sm font-bold text-amber-600">6.5</span>
+              </a>
+            </div>
+          </div>
+          <!-- Emerging -->
+          <div class="bg-surface-light rounded-2xl border border-border-light shadow-sm p-5">
+            <h4 class="text-sm font-semibold text-slate-500 mb-3 flex items-center gap-1.5">
+              <span class="mso text-[16px] text-teal-500">fiber_new</span>
+              Emerging
+            </h4>
+            <div class="flex flex-col gap-3">
+              <a href="#" class="flex items-center gap-3 group">
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-bold text-slate-900 truncate group-hover:text-primary transition-colors">BMW Connected Drive</p>
+                  <p class="text-xs text-slate-400">15 mentions</p>
+                </div>
+                <span class="px-2 py-0.5 rounded-lg text-[10px] font-semibold border bg-purple-50 text-purple-700 border-purple-100">product</span>
+              </a>
+              <a href="#" class="flex items-center gap-3 group">
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-bold text-slate-900 truncate group-hover:text-primary transition-colors">Pet Monitoring</p>
+                  <p class="text-xs text-slate-400">47 mentions</p>
+                </div>
+                <span class="px-2 py-0.5 rounded-lg text-[10px] font-semibold border bg-cyan-50 text-cyan-700 border-cyan-100">scenario</span>
+              </a>
+              <a href="#" class="flex items-center gap-3 group">
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-bold text-slate-900 truncate group-hover:text-primary transition-colors">Perplexity AI</p>
+                  <p class="text-xs text-slate-400">22 mentions</p>
+                </div>
+                <span class="px-2 py-0.5 rounded-lg text-[10px] font-semibold border bg-blue-50 text-blue-700 border-blue-100">brand</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Trend Detection — 4-col -->
+      <section>
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <span class="mso text-primary">trending_up</span>
+            Trend Detection
+          </h3>
+          <a href="#" data-page="inbox" class="text-sm text-primary font-medium hover:text-primary-dark transition-colors">View detailed report</a>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <a href="#" data-page="entity" class="bg-surface-light rounded-2xl border border-border-light shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all p-5 group cursor-pointer" style="animation:cardIn 400ms ease-out 0ms both">
+            <div class="flex justify-between items-start mb-2">
+              <span class="text-sm font-medium text-slate-500">Brand</span>
+              <span class="text-xs font-bold px-2 py-1 rounded-full flex items-center gap-0.5 bg-red-100 text-red-700"><span class="mso text-[16px]">trending_down</span>18%</span>
+            </div>
+            <h4 class="text-xl font-bold text-slate-900 mb-1 group-hover:text-primary transition-colors truncate">Taiwan Mobile</h4>
+            <p class="text-xs text-slate-500 truncate">Post-merger mention volume declining</p>
+          </a>
+          <a href="#" class="bg-surface-light rounded-2xl border border-border-light shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all p-5 group cursor-pointer" style="animation:cardIn 400ms ease-out 80ms both">
+            <div class="flex justify-between items-start mb-2">
+              <span class="text-sm font-medium text-slate-500">Scenario</span>
+              <span class="text-xs font-bold px-2 py-1 rounded-full flex items-center gap-0.5 bg-emerald-100 text-emerald-700"><span class="mso text-[16px]">trending_up</span>320%</span>
+            </div>
+            <h4 class="text-xl font-bold text-slate-900 mb-1 group-hover:text-primary transition-colors truncate">Pet Monitoring</h4>
+            <p class="text-xs text-slate-500 truncate">Emerging IoT scenario — no product mapped</p>
+          </a>
+          <a href="#" class="bg-surface-light rounded-2xl border border-border-light shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all p-5 group cursor-pointer" style="animation:cardIn 400ms ease-out 160ms both">
+            <div class="flex justify-between items-start mb-2">
+              <span class="text-sm font-medium text-slate-500">Product</span>
+              <span class="text-xs font-bold px-2 py-1 rounded-full flex items-center gap-0.5 bg-emerald-100 text-emerald-700"><span class="mso text-[16px]">trending_up</span>45%</span>
+            </div>
+            <h4 class="text-xl font-bold text-slate-900 mb-1 group-hover:text-primary transition-colors truncate">Perplexity Pro</h4>
+            <p class="text-xs text-slate-500 truncate">AI search bundle gaining traction</p>
+          </a>
+          <a href="#" class="bg-surface-light rounded-2xl border border-border-light shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all p-5 group cursor-pointer" style="animation:cardIn 400ms ease-out 240ms both">
+            <div class="flex justify-between items-start mb-2">
+              <span class="text-sm font-medium text-slate-500">Brand</span>
+              <span class="text-xs font-bold px-2 py-1 rounded-full flex items-center gap-0.5 bg-emerald-100 text-emerald-700"><span class="mso text-[16px]">trending_up</span>12%</span>
+            </div>
+            <h4 class="text-xl font-bold text-slate-900 mb-1 group-hover:text-primary transition-colors truncate">FarEasTone</h4>
+            <p class="text-xs text-slate-500 truncate">5G SA network launch driving mentions</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Share of Voice Treemap -->
+      <section class="flex flex-col gap-4">
+        <div class="flex justify-between items-end">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900">Share of Voice</h3>
+            <p class="text-sm text-slate-500">Mention distribution by entity category.</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-4 grid-rows-4 gap-4 h-[400px]">
+          <div class="col-span-2 row-span-4 bg-primary rounded-2xl p-6 relative overflow-hidden group hover:scale-[1.01] transition-transform duration-300 shadow-sm cursor-pointer">
+            <div class="absolute inset-0 bg-gradient-to-br from-white/10 to-black/5 pointer-events-none"></div>
+            <div class="relative z-10 flex flex-col h-full justify-between text-white">
+              <div class="flex justify-between items-start">
+                <span class="font-semibold tracking-wide uppercase text-sm opacity-80">Brand</span>
+                <span class="mso opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+              </div>
+              <div>
+                <h4 class="text-4xl font-light mb-1">35%</h4>
+                <p class="text-xl font-bold">Telecom Brands</p>
+                <p class="text-sm text-white/80 mt-2">Led by Taiwan Mobile, Chunghwa Telecom</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-span-2 row-span-2 bg-[#2dccc5] rounded-2xl p-5 relative overflow-hidden group hover:scale-[1.01] transition-transform duration-300 shadow-sm cursor-pointer text-white">
+            <div class="relative z-10 flex flex-col h-full justify-between">
+              <span class="font-semibold tracking-wide uppercase text-xs opacity-80">Product</span>
+              <div>
+                <h4 class="text-3xl font-light mb-1">28%</h4>
+                <p class="text-lg font-bold">Plans & Services</p>
+                <p class="text-xs text-white/90 mt-1">Led by 5G Unlimited, Roaming Plan</p>
+              </div>
+            </div>
+          </div>
+          <div class="row-span-2 bg-slate-200 rounded-2xl p-5 relative overflow-hidden group hover:scale-[1.01] transition-transform duration-300 shadow-sm cursor-pointer text-slate-800">
+            <div class="relative z-10 flex flex-col h-full justify-between">
+              <span class="font-semibold tracking-wide uppercase text-xs opacity-60">Scenario</span>
+              <div>
+                <h4 class="text-2xl font-light mb-1">18%</h4>
+                <p class="text-base font-bold">Life Scenarios</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-slate-100 rounded-2xl p-4 relative overflow-hidden group hover:scale-[1.01] transition-transform duration-300 shadow-sm cursor-pointer border border-slate-200">
+            <div class="relative z-10 flex flex-col h-full justify-between">
+              <h4 class="text-xl font-light text-slate-400">11%</h4>
+              <p class="text-sm font-bold text-slate-700">KOLs & Creators</p>
+            </div>
+          </div>
+          <div class="bg-slate-100 rounded-2xl p-4 relative overflow-hidden group hover:scale-[1.01] transition-transform duration-300 shadow-sm cursor-pointer border border-slate-200">
+            <div class="relative z-10 flex flex-col h-full justify-between">
+              <h4 class="text-xl font-light text-slate-400">8%</h4>
+              <p class="text-sm font-bold text-slate-700">Events & Campaigns</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Metrics Row -->
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-surface-light rounded-2xl border border-border-light shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all p-6 flex items-center gap-4">
+          <div class="bg-blue-50 p-3 rounded-full text-blue-600 shrink-0"><span class="mso">visibility</span></div>
+          <div class="flex-1">
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Mentions</p>
+            <p class="text-2xl font-light text-slate-900 tabular-nums">12.8k</p>
+          </div>
+          <svg width="64" height="28" viewBox="0 0 64 28"><polyline points="0,24 8,22 16,20 24,18 32,15 40,12 48,10 56,7 64,5" fill="none" stroke="#3b82f6" stroke-width="1.5"/></svg>
+        </div>
+        <div class="bg-surface-light rounded-2xl border border-border-light shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all p-6 flex items-center gap-4">
+          <div class="bg-purple-50 p-3 rounded-full text-purple-600 shrink-0"><span class="mso">sentiment_satisfied</span></div>
+          <div class="flex-1">
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Sentiment Score</p>
+            <p class="text-2xl font-light text-slate-900 tabular-nums">6.8<span class="text-sm font-normal text-slate-400">/10</span></p>
+          </div>
+          <svg width="64" height="28" viewBox="0 0 64 28"><polyline points="0,8 8,10 16,11 24,13 32,14 40,16 48,17 56,19 64,20" fill="none" stroke="#8b5cf6" stroke-width="1.5"/></svg>
+        </div>
+        <a href="#" data-page="inbox" class="bg-surface-light rounded-2xl border border-border-light shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all p-6 flex items-center gap-4 cursor-pointer">
+          <div class="bg-orange-50 p-3 rounded-full text-orange-600 shrink-0"><span class="mso">electric_bolt</span></div>
+          <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Active Signals</p>
+            <p class="text-2xl font-light tabular-nums text-red-600">5</p>
+          </div>
+        </a>
+      </section>
+
+      <!-- Entity Monitor -->
+      <section>
+        <div class="flex items-center justify-between mb-5">
+          <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2.5">
+            <span class="mso text-primary text-[22px]">monitoring</span>
+            Entity Monitor
+            <span class="text-sm font-normal text-slate-400 ml-1">6/32</span>
+          </h3>
+          <div class="relative">
+            <select class="text-sm font-medium text-slate-600 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 pr-8 appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20">
+              <option>Sort: Mentions</option>
+              <option>Sort: Sentiment</option>
+              <option>Sort: Signals</option>
+              <option>Sort: Name</option>
+            </select>
+            <span class="mso text-[14px] text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">unfold_more</span>
+          </div>
+        </div>
+        <!-- Type filter chips -->
+        <div class="flex flex-wrap gap-2 mb-5">
+          <button class="px-3.5 py-1.5 rounded-full text-sm font-medium bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 flex items-center gap-1.5">
+            <span class="mso text-[16px] mso-fill">star</span>Watchlist (3)
+          </button>
+          <button class="px-3.5 py-1.5 rounded-full text-sm font-medium bg-primary text-white">All (32)</button>
+          <button class="px-3.5 py-1.5 rounded-full text-sm font-medium bg-slate-100 text-slate-600 hover:bg-slate-200">Brand (4)</button>
+          <button class="px-3.5 py-1.5 rounded-full text-sm font-medium bg-slate-100 text-slate-600 hover:bg-slate-200">Product (10)</button>
+          <button class="px-3.5 py-1.5 rounded-full text-sm font-medium bg-slate-100 text-slate-600 hover:bg-slate-200">Scenario (8)</button>
+          <button class="px-3.5 py-1.5 rounded-full text-sm font-medium bg-slate-100 text-slate-600 hover:bg-slate-200">Person (4)</button>
+          <button class="px-3.5 py-1.5 rounded-full text-sm font-medium bg-slate-100 text-slate-600 hover:bg-slate-200">Event (6)</button>
+        </div>
+
+        <!-- Entity Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+          <!-- Card: Taiwan Mobile -->
+          <a href="#" data-page="entity" class="bg-surface-light rounded-2xl border border-border-light shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all p-5 cursor-pointer group flex flex-col" style="animation:cardIn 400ms ease-out 0ms both">
+            <div class="flex items-start justify-between gap-2 mb-1">
+              <div class="flex items-center gap-1.5 min-w-0">
+                <span class="mso text-[18px] text-amber-500 mso-fill shrink-0">star</span>
+                <h4 class="text-base font-bold text-slate-900 group-hover:text-primary transition-colors truncate">Taiwan Mobile</h4>
+              </div>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5 shrink-0 bg-red-100 text-red-700"><span class="mso text-[14px]">trending_down</span>18%</span>
+            </div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold text-red-700 bg-red-50"><span class="mso text-[13px]">error</span>Critical Issue</span>
+              <span class="text-[10px] font-medium text-slate-400">Brand</span>
+            </div>
+            <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed mb-3 flex-1">NCC satisfaction survey — TWM dropped from 2nd to 3rd place. Consumer satisfaction declined post-merger.</p>
+            <svg width="240" height="40" viewBox="0 0 240 40" class="w-full mb-3"><polyline points="0,35 20,32 40,28 60,24 80,26 100,20 120,22 140,18 160,16 180,20 200,14 220,12 240,10" fill="none" stroke="#00a38d" stroke-width="1.5"/></svg>
+            <div class="flex items-center justify-between gap-3 pt-3 border-t border-slate-100">
+              <div class="flex items-center gap-3">
+                <span class="flex items-center gap-1.5 text-xs text-slate-500"><span class="mso text-[14px]">bar_chart</span><span class="tabular-nums font-medium text-slate-700">284</span></span>
+                <span class="flex items-center gap-0.5 text-xs font-bold text-red-600"><span class="mso text-[16px]">trending_down</span><span class="tabular-nums">-18%</span></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-14 h-1.5 rounded-full bg-slate-100 overflow-hidden"><div class="h-full rounded-full bg-amber-400" style="width:69%"></div></div>
+                <span class="text-[11px] font-bold tabular-nums whitespace-nowrap text-amber-600">69% Mix</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- Card: 5G Unlimited -->
+          <a href="#" data-page="entity" class="bg-surface-light rounded-2xl border border-border-light shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all p-5 cursor-pointer group flex flex-col" style="animation:cardIn 400ms ease-out 60ms both">
+            <div class="flex items-start justify-between gap-2 mb-1">
+              <div class="flex items-center gap-1.5 min-w-0">
+                <span class="mso text-[18px] text-amber-500 mso-fill shrink-0">star</span>
+                <h4 class="text-base font-bold text-slate-900 group-hover:text-primary transition-colors truncate">5G Unlimited Plan</h4>
+              </div>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5 shrink-0 bg-red-100 text-red-700"><span class="mso text-[14px]">trending_down</span>8%</span>
+            </div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold text-amber-700 bg-amber-50"><span class="mso text-[13px]">warning</span>Needs Attention</span>
+              <span class="text-[10px] font-medium text-slate-400">Product</span>
+            </div>
+            <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed mb-3 flex-1">5G speed throttling complaints surged 45% week-over-week. Users reporting speeds below 100Mbps during peak hours.</p>
+            <svg width="240" height="40" viewBox="0 0 240 40" class="w-full mb-3"><polyline points="0,10 20,12 40,14 60,16 80,14 100,18 120,20 140,22 160,20 180,24 200,26 220,24 240,26" fill="none" stroke="#ef4444" stroke-width="1.5"/></svg>
+            <div class="flex items-center justify-between gap-3 pt-3 border-t border-slate-100">
+              <div class="flex items-center gap-3">
+                <span class="flex items-center gap-1.5 text-xs text-slate-500"><span class="mso text-[14px]">bar_chart</span><span class="tabular-nums font-medium text-slate-700">195</span></span>
+                <span class="flex items-center gap-0.5 text-xs font-bold text-red-600"><span class="mso text-[16px]">trending_down</span><span class="tabular-nums">-8%</span></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-14 h-1.5 rounded-full bg-slate-100 overflow-hidden"><div class="h-full rounded-full bg-red-400" style="width:55%"></div></div>
+                <span class="text-[11px] font-bold tabular-nums whitespace-nowrap text-red-600">55% Neg</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- Card: Chunghwa Telecom -->
+          <a href="#" data-page="entity" class="bg-surface-light rounded-2xl border border-border-light shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all p-5 cursor-pointer group flex flex-col" style="animation:cardIn 400ms ease-out 120ms both">
+            <div class="flex items-start justify-between gap-2 mb-1">
+              <div class="flex items-center gap-1.5 min-w-0">
+                <span class="mso text-[18px] text-slate-300 shrink-0">star</span>
+                <h4 class="text-base font-bold text-slate-900 group-hover:text-primary transition-colors truncate">Chunghwa Telecom</h4>
+              </div>
+              <span class="px-2 py-0.5 rounded-lg text-[10px] font-semibold border shrink-0 bg-blue-50 text-blue-700 border-blue-100">brand</span>
+            </div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold text-slate-600 bg-slate-100"><span class="mso text-[13px]">check_circle</span>Stable</span>
+            </div>
+            <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed mb-3 flex-1">168 mentions across 8 aspects this period. Market leader with highest consumer trust.</p>
+            <svg width="240" height="40" viewBox="0 0 240 40" class="w-full mb-3"><polyline points="0,20 20,20 40,19 60,20 80,19 100,19 120,18 140,19 160,18 180,18 200,17 220,17 240,17" fill="none" stroke="#10b981" stroke-width="1.5"/></svg>
+            <div class="flex items-center justify-between gap-3 pt-3 border-t border-slate-100">
+              <div class="flex items-center gap-3">
+                <span class="flex items-center gap-1.5 text-xs text-slate-500"><span class="mso text-[14px]">bar_chart</span><span class="tabular-nums font-medium text-slate-700">168</span></span>
+                <span class="flex items-center gap-0.5 text-xs font-bold text-emerald-600"><span class="mso text-[16px]">trending_up</span><span class="tabular-nums">+5%</span></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-14 h-1.5 rounded-full bg-slate-100 overflow-hidden"><div class="h-full rounded-full bg-emerald-400" style="width:74%"></div></div>
+                <span class="text-[11px] font-bold tabular-nums whitespace-nowrap text-emerald-600">74% Pos</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- Card: Travel & Roaming -->
+          <a href="#" class="bg-surface-light rounded-2xl border border-border-light shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all p-5 cursor-pointer group flex flex-col" style="animation:cardIn 400ms ease-out 180ms both">
+            <div class="flex items-start justify-between gap-2 mb-1">
+              <div class="flex items-center gap-1.5 min-w-0">
+                <span class="mso text-[18px] text-amber-500 mso-fill shrink-0">star</span>
+                <h4 class="text-base font-bold text-slate-900 group-hover:text-primary transition-colors truncate">Travel & Roaming</h4>
+              </div>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5 shrink-0 bg-emerald-100 text-emerald-700"><span class="mso text-[14px]">trending_up</span>22%</span>
+            </div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold text-emerald-700 bg-emerald-50"><span class="mso text-[13px]">trending_up</span>Rising Trend</span>
+              <span class="text-[10px] font-medium text-slate-400">Scenario</span>
+            </div>
+            <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed mb-3 flex-1">156 mentions across 5 aspects this period. Seasonal travel demand driving discussion.</p>
+            <svg width="240" height="40" viewBox="0 0 240 40" class="w-full mb-3"><polyline points="0,32 20,28 40,24 60,20 80,22 100,16 120,14 140,12 160,10 180,12 200,8 220,6 240,4" fill="none" stroke="#10b981" stroke-width="1.5"/></svg>
+            <div class="flex items-center justify-between gap-3 pt-3 border-t border-slate-100">
+              <div class="flex items-center gap-3">
+                <span class="flex items-center gap-1.5 text-xs text-slate-500"><span class="mso text-[14px]">bar_chart</span><span class="tabular-nums font-medium text-slate-700">156</span></span>
+                <span class="flex items-center gap-0.5 text-xs font-bold text-emerald-600"><span class="mso text-[16px]">trending_up</span><span class="tabular-nums">+22%</span></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-14 h-1.5 rounded-full bg-slate-100 overflow-hidden"><div class="h-full rounded-full bg-emerald-400" style="width:71%"></div></div>
+                <span class="text-[11px] font-bold tabular-nums whitespace-nowrap text-emerald-600">71% Pos</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- Card: FarEasTone -->
+          <a href="#" class="bg-surface-light rounded-2xl border border-border-light shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all p-5 cursor-pointer group flex flex-col" style="animation:cardIn 400ms ease-out 240ms both">
+            <div class="flex items-start justify-between gap-2 mb-1">
+              <div class="flex items-center gap-1.5 min-w-0">
+                <span class="mso text-[18px] text-slate-300 shrink-0">star</span>
+                <h4 class="text-base font-bold text-slate-900 group-hover:text-primary transition-colors truncate">FarEasTone</h4>
+              </div>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5 shrink-0 bg-emerald-100 text-emerald-700"><span class="mso text-[14px]">trending_up</span>12%</span>
+            </div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold text-emerald-700 bg-emerald-50"><span class="mso text-[13px]">trending_up</span>Rising Trend</span>
+              <span class="text-[10px] font-medium text-slate-400">Brand</span>
+            </div>
+            <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed mb-3 flex-1">5G SA network launch — first in Taiwan with standalone architecture deployment.</p>
+            <svg width="240" height="40" viewBox="0 0 240 40" class="w-full mb-3"><polyline points="0,28 20,26 40,24 60,22 80,24 100,20 120,18 140,20 160,16 180,14 200,16 220,12 240,10" fill="none" stroke="#10b981" stroke-width="1.5"/></svg>
+            <div class="flex items-center justify-between gap-3 pt-3 border-t border-slate-100">
+              <div class="flex items-center gap-3">
+                <span class="flex items-center gap-1.5 text-xs text-slate-500"><span class="mso text-[14px]">bar_chart</span><span class="tabular-nums font-medium text-slate-700">142</span></span>
+                <span class="flex items-center gap-0.5 text-xs font-bold text-emerald-600"><span class="mso text-[16px]">trending_up</span><span class="tabular-nums">+12%</span></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-14 h-1.5 rounded-full bg-slate-100 overflow-hidden"><div class="h-full rounded-full bg-emerald-400" style="width:72%"></div></div>
+                <span class="text-[11px] font-bold tabular-nums whitespace-nowrap text-emerald-600">72% Pos</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- Card: Perplexity Pro -->
+          <a href="#" class="bg-surface-light rounded-2xl border border-border-light shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all p-5 cursor-pointer group flex flex-col" style="animation:cardIn 400ms ease-out 300ms both">
+            <div class="flex items-start justify-between gap-2 mb-1">
+              <div class="flex items-center gap-1.5 min-w-0">
+                <span class="mso text-[18px] text-slate-300 shrink-0">star</span>
+                <h4 class="text-base font-bold text-slate-900 group-hover:text-primary transition-colors truncate">Perplexity Pro</h4>
+              </div>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5 shrink-0 bg-emerald-100 text-emerald-700"><span class="mso text-[14px]">trending_up</span>45%</span>
+            </div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold text-teal-700 bg-teal-50"><span class="mso text-[13px]">fiber_new</span>Emerging</span>
+              <span class="text-[10px] font-medium text-slate-400">Product</span>
+            </div>
+            <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed mb-3 flex-1">AI search bundle exclusive to TWM subscribers. Highest sentiment new product in 6 months.</p>
+            <svg width="240" height="40" viewBox="0 0 240 40" class="w-full mb-3"><polyline points="0,36 20,34 40,32 60,28 80,26 100,22 120,20 140,16 160,14 180,12 200,10 220,8 240,6" fill="none" stroke="#10b981" stroke-width="1.5"/></svg>
+            <div class="flex items-center justify-between gap-3 pt-3 border-t border-slate-100">
+              <div class="flex items-center gap-3">
+                <span class="flex items-center gap-1.5 text-xs text-slate-500"><span class="mso text-[14px]">bar_chart</span><span class="tabular-nums font-medium text-slate-700">38</span></span>
+                <span class="flex items-center gap-0.5 text-xs font-bold text-emerald-600"><span class="mso text-[16px]">trending_up</span><span class="tabular-nums">+45%</span></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-14 h-1.5 rounded-full bg-slate-100 overflow-hidden"><div class="h-full rounded-full bg-emerald-400" style="width:78%"></div></div>
+                <span class="text-[11px] font-bold tabular-nums whitespace-nowrap text-emerald-600">78% Pos</span>
+              </div>
+            </div>
+          </a>
+
+        </div>
+      </section>
+
+      <!-- Recent Insights -->
+      <section>
+        <div class="flex items-center justify-between mb-5">
+          <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2.5">
+            <span class="mso text-purple-500 text-[22px]">auto_awesome</span>
+            Recent Insights
+          </h3>
+          <a href="#" data-page="inbox" class="text-sm font-medium text-primary hover:text-primary-dark transition-colors">View all →</a>
+        </div>
+        <div class="flex flex-col gap-4">
+          <a href="#" data-page="entity" class="rounded-2xl border border-purple-100 bg-gradient-to-r from-purple-50/60 to-white px-6 py-5 shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all group">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="mso text-[16px] text-purple-500">auto_awesome</span>
+              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-purple-100 text-purple-700">Perplexity Pro</span>
+            </div>
+            <h4 class="text-sm font-bold text-slate-900 group-hover:text-primary transition-colors mb-1">Perplexity Pro bundle driving positive brand differentiation for TWM</h4>
+            <p class="text-sm text-slate-600 line-clamp-2 leading-relaxed">Users comparing TWM's AI search bundle favorably against CHT and FET. Sentiment score 0.78 — highest among all new products launched in past 6 months.</p>
+          </a>
+          <a href="#" data-page="entity" class="rounded-2xl border border-purple-100 bg-gradient-to-r from-purple-50/60 to-white px-6 py-5 shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all group">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="mso text-[16px] text-purple-500">auto_awesome</span>
+              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-purple-100 text-purple-700">Taiwan Mobile</span>
+            </div>
+            <h4 class="text-sm font-bold text-slate-900 group-hover:text-primary transition-colors mb-1">TWM 2025 EPS surpassed CHT to become "Profit King" of telecom sector</h4>
+            <p class="text-sm text-slate-600 line-clamp-2 leading-relaxed">Full-year EPS reached NT$5.78, first time exceeding Chunghwa Telecom. Driven by Taiwan Star subscriber integration and ARPU optimization.</p>
+          </a>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div><!-- /page-pulse -->
+
+
+<!-- ============================================================ -->
+<!-- PAGE: ENTITY PROFILE -->
+<!-- ============================================================ -->
+<div id="page-entity" class="page">
+  <div class="flex-1 overflow-y-auto bg-background-light">
+    <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-6">
+
+      <a href="#" data-page="pulse" class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-primary transition-colors w-fit">
+        <span class="mso text-[18px]">arrow_back</span>Back to overview
+      </a>
+
+      <!-- Entity Header -->
+      <div class="bg-surface-light rounded-xl border border-border-light shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] p-6">
+        <div class="flex flex-col lg:flex-row lg:items-center gap-6">
+          <div class="flex items-center gap-4 lg:min-w-0 lg:flex-1">
+            <div class="size-14 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl font-bold shrink-0">台</div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-3 flex-wrap">
+                <span class="mso text-[22px] text-amber-500 mso-fill">star</span>
+                <h2 class="text-xl font-bold text-slate-900 truncate">Taiwan Mobile</h2>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold border bg-blue-50 text-blue-700 border-blue-100">brand</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1">Also known as: 台灣大哥大, 台哥大, TWM, 台灣大</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 shrink-0">
+            <div class="flex bg-slate-100 rounded-lg p-0.5 text-sm">
+              <button class="px-3 py-1.5 rounded-md text-slate-500">1w</button>
+              <button class="px-3 py-1.5 rounded-md bg-white shadow-sm font-semibold text-slate-800">4w</button>
+              <button class="px-3 py-1.5 rounded-md text-slate-500">12w</button>
+              <button class="px-3 py-1.5 rounded-md text-slate-500">All</button>
+            </div>
+            <div class="text-center px-4 py-2 rounded-lg bg-amber-50">
+              <p class="text-lg font-bold tabular-nums text-amber-700">6.9</p>
+              <p class="text-[10px] font-medium text-slate-500">Sentiment</p>
+            </div>
+            <div class="text-center px-4 py-2 rounded-lg bg-slate-50">
+              <p class="text-lg font-bold tabular-nums text-slate-900">284</p>
+              <p class="text-[10px] font-medium text-slate-500">Mentions</p>
+            </div>
+            <div class="text-center px-4 py-2 rounded-lg bg-emerald-50">
+              <p class="text-lg font-bold tabular-nums text-emerald-700">142</p>
+              <p class="text-[10px] font-medium text-slate-500">Positive</p>
+            </div>
+            <div class="text-center px-4 py-2 rounded-lg bg-rose-50">
+              <p class="text-lg font-bold tabular-nums text-rose-600">68</p>
+              <p class="text-[10px] font-medium text-slate-500">Negative</p>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4">
+          <div class="h-2 rounded-full bg-gray-100 overflow-hidden flex">
+            <div class="h-full bg-emerald-400" style="width:50%"></div>
+            <div class="h-full bg-amber-300" style="width:26%"></div>
+            <div class="h-full bg-rose-400" style="width:24%"></div>
+          </div>
+          <div class="flex justify-between mt-2 text-[10px] text-slate-400">
+            <span>Pos 50%</span><span>Neu 26%</span><span>Neg 24%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Insight Summary -->
+      <div class="liquid-glass rounded-2xl">
+        <div class="ai-summary-enter flex flex-col">
+          <div class="overflow-y-auto px-6 pt-6 pb-2 max-h-[420px]">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="mso text-purple-400">auto_awesome</span>
+              <h3 class="text-sm font-bold text-purple-600/80 uppercase tracking-wider">AI Insight Summary</h3>
+              <span class="ml-auto text-[11px] text-slate-400/60">2h ago</span>
+            </div>
+            <p class="text-base font-bold text-slate-800 mb-4">Post-merger sentiment stabilizing but service gaps persist</p>
+            <!-- Reasoning Chain -->
+            <div class="mb-5">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="mso text-purple-400 text-[16px]">account_tree</span>
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Reasoning Chain</span>
+                <div class="flex-1 h-px bg-gradient-to-r from-slate-200/60 to-transparent"></div>
+              </div>
+              <div class="relative pl-4 border-l-2 border-purple-300/50 space-y-4">
+                <div class="relative">
+                  <div class="absolute -left-[calc(1rem+5px)] top-1 size-2.5 rounded-full bg-purple-400/70 ring-2 ring-white/60"></div>
+                  <div class="bg-white/40 backdrop-blur-sm rounded-lg p-3 space-y-1.5 border border-white/50">
+                    <p class="text-xs font-semibold text-purple-600/80 flex items-center gap-1"><span class="mso text-[13px]">sensors</span>NCC satisfaction dropped from 3.72 to 3.58</p>
+                    <p class="text-xs text-slate-500 flex items-center gap-1"><span class="mso text-[13px]">arrow_forward</span>Post-merger system integration causing service delays</p>
+                    <p class="text-sm font-medium text-slate-700 flex items-center gap-1"><span class="mso text-[13px]">check_circle</span>Customer service is the top priority to address</p>
+                  </div>
+                </div>
+                <div class="relative">
+                  <div class="absolute -left-[calc(1rem+5px)] top-1 size-2.5 rounded-full bg-purple-400/70 ring-2 ring-white/60"></div>
+                  <div class="bg-white/40 backdrop-blur-sm rounded-lg p-3 space-y-1.5 border border-white/50">
+                    <p class="text-xs font-semibold text-purple-600/80 flex items-center gap-1"><span class="mso text-[13px]">sensors</span>Perplexity Pro sentiment at 0.78, highest new product</p>
+                    <p class="text-xs text-slate-500 flex items-center gap-1"><span class="mso text-[13px]">arrow_forward</span>AI bundle creates unique value proposition vs competitors</p>
+                    <p class="text-sm font-medium text-slate-700 flex items-center gap-1"><span class="mso text-[13px]">check_circle</span>Expand AI ecosystem as key differentiator</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Body -->
+            <div class="text-sm text-slate-600 leading-relaxed mb-4">
+              TWM completed the Taiwan Star merger in Q3 2025, adding 2.4M subscribers to reach 10.4M total. While 5G coverage improved to 85% population, <mark class="bg-red-100 text-red-700 font-semibold px-0.5 rounded-sm">customer service satisfaction dropped</mark> due to system integration issues. The <mark class="bg-purple-100 text-purple-800 font-semibold px-0.5 rounded-sm">Perplexity Pro AI bundle</mark> is the most positively received new product.
+            </div>
+            <!-- Actions -->
+            <div class="mb-2">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="mso text-amber-400 text-[16px]">lightbulb</span>
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Suggested Actions</span>
+                <div class="flex-1 h-px bg-gradient-to-r from-slate-200/60 to-transparent"></div>
+              </div>
+              <div class="space-y-2.5">
+                <div class="bg-white/40 backdrop-blur-sm border border-white/50 rounded-xl p-3.5 hover:bg-white/55 transition-colors">
+                  <span class="text-xs font-semibold text-slate-400">NCC satisfaction dropped</span>
+                  <p class="text-sm text-slate-700 font-medium leading-relaxed mt-1 mb-1.5">Accelerate customer service system integration — deploy unified CRM by Q2</p>
+                  <div class="flex items-center gap-1.5"><span class="mso text-emerald-500/70 text-[13px]">flag</span><span class="text-xs text-emerald-600/80">Customer Service Team</span></div>
+                </div>
+                <div class="bg-white/40 backdrop-blur-sm border border-white/50 rounded-xl p-3.5 hover:bg-white/55 transition-colors">
+                  <span class="text-xs font-semibold text-slate-400">Perplexity Pro high sentiment</span>
+                  <p class="text-sm text-slate-700 font-medium leading-relaxed mt-1 mb-1.5">Expand AI bundle marketing — leverage as key brand differentiator</p>
+                  <div class="flex items-center gap-1.5"><span class="mso text-emerald-500/70 text-[13px]">flag</span><span class="text-xs text-emerald-600/80">IMC Marketing Team</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Chat input -->
+          <div class="px-6 pb-5 pt-3 border-t border-white/20">
+            <div class="relative flex items-center border-2 border-white/40 rounded-xl">
+              <input type="text" placeholder="Ask about this analysis..." class="peer w-full bg-white/60 backdrop-blur-sm rounded-[10px] pl-11 pr-10 py-4 text-sm text-slate-700 placeholder:text-slate-400/50 focus:outline-none focus:bg-white/80 transition-all focus:ring-1 focus:ring-purple-300/40">
+              <span class="mso absolute left-3 text-[16px] text-purple-400/70 peer-focus:text-purple-500 pointer-events-none z-10 transition-colors">auto_awesome</span>
+              <button class="absolute right-1.5 size-7 rounded-lg bg-purple-500/80 hover:bg-purple-500 text-white flex items-center justify-center z-10"><span class="mso text-[15px]">arrow_upward</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8/4 Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- LEFT 8 cols -->
+        <div class="lg:col-span-8 flex flex-col gap-6">
+          <!-- Aspect Distribution -->
+          <div class="bg-surface-light rounded-xl border border-border-light shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] p-6">
+            <div class="flex items-start justify-between mb-4">
+              <div>
+                <h1 class="text-xl font-bold text-slate-900 mb-1">Aspect Distribution</h1>
+                <p class="text-sm text-slate-500">Analysis of 284 mentions for <span class="text-primary font-semibold">"Taiwan Mobile"</span></p>
+              </div>
+              <div class="text-right">
+                <div class="text-2xl font-bold text-slate-900 tabular-nums">284</div>
+                <div class="text-xs font-medium flex items-center justify-end gap-1 px-2 py-0.5 rounded-full text-rose-600 bg-rose-50"><span class="mso text-[14px]">trending_down</span>-18% vs last period</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 mb-4">
+              <span class="text-xs text-slate-500 font-medium">Filter:</span>
+              <button class="px-3 py-1 rounded-lg text-xs font-medium bg-primary text-white shadow-sm">All</button>
+              <button class="px-3 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200">Positive</button>
+              <button class="px-3 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200">Negative</button>
+            </div>
+            <!-- Aspect bars -->
+            <div class="space-y-4">
+              <div class="group cursor-pointer">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="text-sm font-semibold text-slate-700 group-hover:text-primary transition-colors">Merger Integration</span>
+                  <span class="text-xs text-slate-400">52 mentions</span>
+                </div>
+                <div class="h-2.5 rounded-full bg-slate-100 overflow-hidden flex">
+                  <div class="h-full bg-rose-400 rounded-l-full" style="width:62%"></div>
+                  <div class="h-full bg-slate-300" style="width:18%"></div>
+                  <div class="h-full bg-emerald-400 rounded-r-full" style="width:20%"></div>
+                </div>
+              </div>
+              <div class="group cursor-pointer">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="text-sm font-semibold text-slate-700 group-hover:text-primary transition-colors">5G Experience</span>
+                  <span class="text-xs text-slate-400">44 mentions</span>
+                </div>
+                <div class="h-2.5 rounded-full bg-slate-100 overflow-hidden flex">
+                  <div class="h-full bg-rose-400 rounded-l-full" style="width:40%"></div>
+                  <div class="h-full bg-slate-300" style="width:25%"></div>
+                  <div class="h-full bg-emerald-400 rounded-r-full" style="width:35%"></div>
+                </div>
+              </div>
+              <div class="group cursor-pointer">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="text-sm font-semibold text-slate-700 group-hover:text-primary transition-colors">Value for Money</span>
+                  <span class="text-xs text-slate-400">38 mentions</span>
+                </div>
+                <div class="h-2.5 rounded-full bg-slate-100 overflow-hidden flex">
+                  <div class="h-full bg-rose-400 rounded-l-full" style="width:28%"></div>
+                  <div class="h-full bg-slate-300" style="width:20%"></div>
+                  <div class="h-full bg-emerald-400 rounded-r-full" style="width:52%"></div>
+                </div>
+              </div>
+              <div class="group cursor-pointer">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="text-sm font-semibold text-slate-700 group-hover:text-primary transition-colors">Brand Image</span>
+                  <span class="text-xs text-slate-400">32 mentions</span>
+                </div>
+                <div class="h-2.5 rounded-full bg-slate-100 overflow-hidden flex">
+                  <div class="h-full bg-rose-400 rounded-l-full" style="width:15%"></div>
+                  <div class="h-full bg-slate-300" style="width:20%"></div>
+                  <div class="h-full bg-emerald-400 rounded-r-full" style="width:65%"></div>
+                </div>
+              </div>
+              <div class="group cursor-pointer">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="text-sm font-semibold text-slate-700 group-hover:text-primary transition-colors">Streaming Ecosystem</span>
+                  <span class="text-xs text-slate-400">28 mentions</span>
+                </div>
+                <div class="h-2.5 rounded-full bg-slate-100 overflow-hidden flex">
+                  <div class="h-full bg-rose-400 rounded-l-full" style="width:12%"></div>
+                  <div class="h-full bg-slate-300" style="width:15%"></div>
+                  <div class="h-full bg-emerald-400 rounded-r-full" style="width:73%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Mentions -->
+          <h3 class="text-lg font-bold text-slate-900">Recent Mentions</h3>
+          <div class="flex items-center gap-3 flex-wrap">
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs text-slate-500">Sort:</span>
+              <button class="px-2.5 py-1 rounded-lg text-xs font-medium bg-primary text-white shadow-sm">Latest</button>
+              <button class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200">Most Positive</button>
+              <button class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200">Most Negative</button>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs text-slate-500">Sentiment:</span>
+              <button class="px-2.5 py-1 rounded-lg text-xs font-medium bg-primary text-white shadow-sm">All</button>
+              <button class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200">Positive</button>
+              <button class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200">Negative</button>
+            </div>
+          </div>
+          <div class="flex flex-col gap-4">
+            <!-- Mention card 1 -->
+            <div class="bg-surface-light rounded-xl border border-border-light shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="size-7 rounded-full bg-gradient-to-br from-pink-500 to-purple-500"></div>
+                <span class="text-sm font-semibold text-slate-800">tech_reviewer_tw</span>
+                <span class="text-[10px] bg-gradient-to-r from-pink-500 to-purple-500 text-white px-1.5 py-0.5 rounded-full font-medium">Instagram</span>
+                <div class="ml-auto flex items-center gap-1.5">
+                  <span class="inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700">positive</span>
+                  <span class="text-[10px] text-slate-400">2h ago</span>
+                </div>
+              </div>
+              <p class="text-sm text-slate-700 leading-relaxed">台灣大5G合併後網速確實有提升，但客服等待時間變長了⋯希望能改善</p>
+              <div class="flex gap-1.5 mt-2">
+                <span class="text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded-full">5G</span>
+                <span class="text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded-full">customer service</span>
+              </div>
+            </div>
+            <!-- Mention card 2 -->
+            <div class="bg-surface-light rounded-xl border border-border-light shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="size-7 rounded-full bg-red-600"></div>
+                <span class="text-sm font-semibold text-slate-800">阿貴科技日常</span>
+                <span class="text-[10px] bg-red-600 text-white px-1.5 py-0.5 rounded-full font-medium">YouTube</span>
+                <div class="ml-auto flex items-center gap-1.5">
+                  <span class="inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600">neutral</span>
+                  <span class="text-[10px] text-slate-400">5h ago</span>
+                </div>
+              </div>
+              <p class="text-sm text-slate-700 leading-relaxed">實測台灣大跟中華電信的5G速度對比，結果出乎意料...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT 4 cols -->
+        <div class="lg:col-span-4 flex flex-col gap-6">
+          <div class="lg:sticky lg:top-6 flex flex-col gap-6">
+            <!-- Related Entities -->
+            <div class="bg-surface-light rounded-xl border border-border-light shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] p-6">
+              <h3 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2"><span class="mso text-primary">hub</span>Related Entities</h3>
+              <div class="flex flex-col gap-1">
+                <a href="#" class="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group">
+                  <div class="relative">
+                    <div class="size-10 rounded-full bg-emerald-500 flex items-center justify-center text-white text-sm font-bold">中</div>
+                    <div class="absolute -bottom-1 -right-1 bg-yellow-400 text-[9px] font-bold size-4 flex items-center justify-center rounded-full text-white border-2 border-white">1</div>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h4 class="text-sm font-bold text-slate-900 truncate group-hover:text-primary transition-colors">Chunghwa Telecom</h4>
+                    <p class="text-xs text-slate-500 truncate">competes_with · brand</p>
+                  </div>
+                  <span class="mso text-slate-300 group-hover:text-primary text-[20px]">chevron_right</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group">
+                  <div class="relative">
+                    <div class="size-10 rounded-full bg-violet-500 flex items-center justify-center text-white text-sm font-bold">遠</div>
+                    <div class="absolute -bottom-1 -right-1 bg-slate-300 text-[9px] font-bold size-4 flex items-center justify-center rounded-full text-white border-2 border-white">2</div>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h4 class="text-sm font-bold text-slate-900 truncate group-hover:text-primary transition-colors">FarEasTone</h4>
+                    <p class="text-xs text-slate-500 truncate">competes_with · brand</p>
+                  </div>
+                  <span class="mso text-slate-300 group-hover:text-primary text-[20px]">chevron_right</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group">
+                  <div class="relative">
+                    <div class="size-10 rounded-full bg-rose-500 flex items-center justify-center text-white text-sm font-bold">5</div>
+                    <div class="absolute -bottom-1 -right-1 bg-amber-600 text-[9px] font-bold size-4 flex items-center justify-center rounded-full text-white border-2 border-white">3</div>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h4 class="text-sm font-bold text-slate-900 truncate group-hover:text-primary transition-colors">5G Unlimited Plan</h4>
+                    <p class="text-xs text-slate-500 truncate">produces · product</p>
+                  </div>
+                  <span class="mso text-slate-300 group-hover:text-primary text-[20px]">chevron_right</span>
+                </a>
+              </div>
+            </div>
+            <!-- Insights & Alerts -->
+            <div class="bg-surface-light rounded-xl border border-border-light shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] p-6">
+              <h3 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2"><span class="mso text-purple-500">auto_awesome</span>Insights & Alerts</h3>
+              <div class="flex flex-col gap-2">
+                <div class="rounded-xl p-4 border bg-gray-50/50 border-gray-100">
+                  <div class="flex items-start gap-3">
+                    <div class="bg-red-50 p-1.5 rounded-lg shrink-0 mt-0.5"><span class="mso text-[16px] text-red-600">error</span></div>
+                    <div class="flex-1 min-w-0">
+                      <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Alert</span>
+                      <p class="text-sm font-medium text-slate-900 leading-relaxed">NCC satisfaction survey — TWM dropped to 3rd</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="rounded-xl p-4 border bg-purple-50/50 border-purple-100">
+                  <div class="flex items-start gap-3">
+                    <div class="bg-purple-100 p-1.5 rounded-lg shrink-0 mt-0.5"><span class="mso text-[16px] text-purple-600">auto_awesome</span></div>
+                    <div class="flex-1 min-w-0">
+                      <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Insight</span>
+                      <p class="text-sm font-medium text-slate-900 leading-relaxed">Perplexity Pro driving positive brand differentiation</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Info -->
+            <div class="bg-surface-light rounded-xl border border-border-light shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] p-6">
+              <h3 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2"><span class="mso text-slate-400">info</span>Information</h3>
+              <dl class="flex flex-col gap-3 text-sm">
+                <div class="flex items-center justify-between"><dt class="text-slate-500">Status</dt><dd class="font-medium text-slate-900"><span class="inline-flex items-center gap-1 text-emerald-600"><span class="size-1.5 rounded-full bg-emerald-500"></span>active</span></dd></div>
+                <div class="flex items-center justify-between"><dt class="text-slate-500">Aspects</dt><dd class="font-medium text-slate-900 tabular-nums">8</dd></div>
+                <div class="flex items-center justify-between"><dt class="text-slate-500">Created</dt><dd class="font-medium text-slate-900">Aug 15, 2025</dd></div>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div><!-- /page-entity -->
+
+
+<!-- ============================================================ -->
+<!-- PAGE: INBOX -->
+<!-- ============================================================ -->
+<div id="page-inbox" class="page">
+  <div class="flex-1 overflow-y-auto bg-background-light p-8">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex items-start justify-between mb-6">
+        <div><h2 class="text-3xl font-bold tracking-tight text-slate-900">Inbox</h2><p class="text-slate-500 mt-1">Signals and alerts requiring attention</p></div>
+        <span class="bg-rose-50 text-rose-600 text-sm font-semibold px-3 py-1.5 rounded-lg">5 unread</span>
+      </div>
+      <div class="flex items-center gap-3 mb-6 flex-wrap">
+        <div class="flex bg-slate-100 rounded-lg p-0.5 text-xs">
+          <button class="px-3 py-1.5 rounded-md bg-white shadow-sm font-semibold">All</button>
+          <button class="px-3 py-1.5 rounded-md text-rose-600 font-medium">Critical</button>
+          <button class="px-3 py-1.5 rounded-md text-amber-600 font-medium">Warning</button>
+          <button class="px-3 py-1.5 rounded-md text-blue-600 font-medium">Info</button>
+        </div>
+        <div class="h-5 w-px bg-slate-200"></div>
+        <div class="flex gap-1.5 text-xs">
+          <button class="px-2.5 py-1.5 rounded-lg bg-slate-800 text-white font-medium">All Types</button>
+          <button class="px-2.5 py-1.5 rounded-lg bg-slate-50 text-slate-600">Alert</button>
+          <button class="px-2.5 py-1.5 rounded-lg bg-slate-50 text-slate-600">Risk</button>
+          <button class="px-2.5 py-1.5 rounded-lg bg-slate-50 text-slate-600">Trend</button>
+          <button class="px-2.5 py-1.5 rounded-lg bg-slate-50 text-slate-600">Insight</button>
+          <button class="px-2.5 py-1.5 rounded-lg bg-slate-50 text-emerald-700">Opportunity</button>
+        </div>
+      </div>
+      <div class="space-y-3">
+        <!-- Critical -->
+        <div class="bg-surface-light rounded-2xl border border-border-light shadow-sm p-5" style="border-left:3px solid #f43f5e">
+          <div class="flex items-start justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] font-bold bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded-full">brand</span>
+              <span class="text-sm font-semibold">Taiwan Mobile</span>
+              <span class="text-[10px] font-medium bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded-full flex items-center gap-0.5"><span class="mso text-[10px]">warning</span>alert</span>
+            </div>
+            <span class="text-[10px] font-bold bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full">CRITICAL</span>
+          </div>
+          <p class="text-sm font-semibold mb-1">NCC satisfaction survey — TWM dropped from 2nd to 3rd place</p>
+          <p class="text-xs text-secondary leading-relaxed">Consumer satisfaction rating dropped from 3.72 to 3.58, falling behind FarEasTone.</p>
+          <div class="flex items-center gap-4 mt-3 text-[10px] text-slate-400"><span>2 hours ago</span><button class="text-primary font-semibold hover:underline">Mark as read</button></div>
+        </div>
+        <!-- Opportunity -->
+        <div class="bg-surface-light rounded-2xl border border-border-light shadow-sm p-5" style="border-left:3px solid #10b981">
+          <div class="flex items-start justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] font-bold bg-cyan-50 text-cyan-700 px-1.5 py-0.5 rounded-full">scenario</span>
+              <span class="text-sm font-semibold">Pet Monitoring</span>
+              <span class="text-[10px] font-medium bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded-full flex items-center gap-0.5"><span class="mso text-[10px]">lightbulb</span>opportunity</span>
+            </div>
+            <span class="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">OPPORTUNITY</span>
+          </div>
+          <p class="text-sm font-semibold mb-1">Pet home monitoring discussions surged +320% — no TWM IoT product mapped</p>
+          <p class="text-xs text-secondary leading-relaxed">Growing consumer interest in smart pet cameras. Competitors have "Smart Home" bundles.</p>
+          <div class="flex items-center gap-4 mt-3 text-[10px] text-slate-400"><span>1 day ago</span><button class="text-primary font-semibold hover:underline">Mark as read</button></div>
+        </div>
+        <!-- Warning -->
+        <div class="bg-surface-light rounded-2xl border border-border-light shadow-sm p-5" style="border-left:3px solid #f59e0b">
+          <div class="flex items-start justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] font-bold bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded-full">brand</span>
+              <span class="text-sm font-semibold">Taiwan Mobile</span>
+              <span class="text-[10px] font-medium bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded-full flex items-center gap-0.5"><span class="mso text-[10px]">insights</span>trend</span>
+            </div>
+            <span class="text-[10px] font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">WARNING</span>
+          </div>
+          <p class="text-sm font-semibold mb-1">KOL Tim哥 published negative review of post-merger experience</p>
+          <p class="text-xs text-secondary leading-relaxed">Video reached 180K views in 48 hours. Negative sentiment spreading across tech community.</p>
+          <div class="flex items-center gap-4 mt-3 text-[10px] text-slate-400"><span>2 days ago</span><button class="text-primary font-semibold hover:underline">Mark as read</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /page-inbox -->
+
+
+<!-- ============================================================ -->
+<!-- PAGE: SCENARIOS -->
+<!-- ============================================================ -->
+<div id="page-scenarios" class="page">
+  <div class="flex-1 overflow-y-auto bg-background-light p-8">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-3xl font-bold tracking-tight text-slate-900 mb-1">Scenario Explorer</h2>
+      <p class="text-slate-500 mb-6">Map consumer life scenarios to product offerings</p>
+      <div class="flex flex-col gap-4">
+        <!-- Covered scenario -->
+        <div class="bg-surface-light rounded-2xl border border-border-light shadow-sm p-5" style="animation:cardIn 400ms ease-out">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="size-10 rounded-xl bg-cyan-100 flex items-center justify-center text-cyan-700 font-bold text-lg">✈</div>
+            <div class="flex-1">
+              <h3 class="text-sm font-bold">Travel & Roaming</h3>
+              <div class="flex items-center gap-2 mt-0.5">
+                <span class="text-[10px] bg-cyan-50 text-cyan-700 px-1.5 py-0.5 rounded-full font-semibold">scenario</span>
+                <span class="text-xs text-secondary">156 mentions</span>
+                <span class="text-xs text-emerald-600 font-semibold">+22%</span>
+              </div>
+            </div>
+            <span class="text-[10px] bg-emerald-100 text-emerald-700 font-bold px-2 py-1 rounded-lg">COVERED</span>
+          </div>
+          <div class="space-y-2.5 ml-13">
+            <div class="flex items-center gap-3 text-sm"><span class="mso text-[16px] text-slate-400">wifi</span><span class="text-slate-600">Mobile data abroad</span><span class="mso text-[14px] text-slate-300 mx-1">arrow_forward</span><span class="font-semibold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-lg text-xs">5G Roaming Plan</span></div>
+            <div class="flex items-center gap-3 text-sm"><span class="mso text-[16px] text-slate-400">call</span><span class="text-slate-600">International calls</span><span class="mso text-[14px] text-slate-300 mx-1">arrow_forward</span><span class="font-semibold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-lg text-xs">International Calls Add-on</span></div>
+            <div class="flex items-center gap-3 text-sm"><span class="mso text-[16px] text-slate-400">translate</span><span class="text-slate-600">Navigation & translation</span><span class="mso text-[14px] text-slate-300 mx-1">arrow_forward</span><span class="font-semibold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-lg text-xs">Perplexity Pro</span></div>
+          </div>
+        </div>
+        <!-- Uncovered scenario -->
+        <div class="bg-surface-light rounded-2xl border-2 border-rose-200 shadow-sm p-5" style="animation:cardIn 400ms ease-out 80ms both">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="size-10 rounded-xl bg-rose-100 flex items-center justify-center text-rose-700 font-bold text-lg">🐾</div>
+            <div class="flex-1">
+              <h3 class="text-sm font-bold">Pet Home Monitoring</h3>
+              <div class="flex items-center gap-2 mt-0.5">
+                <span class="text-[10px] bg-cyan-50 text-cyan-700 px-1.5 py-0.5 rounded-full font-semibold">scenario</span>
+                <span class="text-xs text-secondary">47 mentions</span>
+                <span class="text-xs text-emerald-600 font-bold">+320%</span>
+              </div>
+            </div>
+            <span class="text-[10px] bg-rose-100 text-rose-700 font-bold px-2 py-1 rounded-lg">UNCOVERED</span>
+          </div>
+          <div class="space-y-2.5 ml-13">
+            <div class="flex items-center gap-3 text-sm"><span class="mso text-[16px] text-slate-400">videocam</span><span class="text-slate-600">Pet camera / live view</span><span class="mso text-[14px] text-rose-300 mx-1">arrow_forward</span><span class="font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-lg text-xs italic">No product mapped</span></div>
+            <div class="flex items-center gap-3 text-sm"><span class="mso text-[16px] text-slate-400">sensors</span><span class="text-slate-600">IoT smart home sensors</span><span class="mso text-[14px] text-rose-300 mx-1">arrow_forward</span><span class="font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-lg text-xs italic">No product mapped</span></div>
+          </div>
+          <div class="mt-4 p-3 bg-amber-50 rounded-xl border border-amber-200">
+            <p class="text-xs font-semibold text-amber-800 flex items-center gap-1.5"><span class="mso text-[14px]">lightbulb</span>Recommendation: Launch IoT home monitoring bundle to capture emerging demand</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /page-scenarios -->
+
+
+<!-- Placeholder pages -->
+<div id="page-search" class="page"><div class="flex-1 overflow-y-auto p-8"><div class="max-w-5xl mx-auto"><h2 class="text-3xl font-bold tracking-tight text-slate-900 mb-1">Semantic Search</h2><p class="text-slate-500 mb-6">Find entities by meaning, not just keywords</p><div class="relative mb-6"><div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-primary"><span class="mso">auto_awesome</span></div><input type="text" placeholder="e.g. 'plans with Netflix included' or 'competitor 5G pricing'" class="w-full h-14 pl-12 pr-6 rounded-xl bg-slate-50 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary text-sm outline-none transition-all"></div><div class="bg-surface-light rounded-2xl border border-border-light shadow-sm p-12 text-center"><span class="mso text-[48px] text-slate-300">manage_search</span><p class="mt-2 text-sm text-secondary">Search results will appear here</p></div></div></div></div>
+<div id="page-graph" class="page"><div class="flex-1 overflow-y-auto p-8"><div class="max-w-5xl mx-auto"><h2 class="text-3xl font-bold tracking-tight text-slate-900 mb-1">Knowledge Graph</h2><p class="text-slate-500 mb-6">Entity relationship visualization</p><div class="bg-surface-light rounded-2xl border border-border-light shadow-sm p-12 text-center" style="height:500px"><span class="mso text-[48px] text-slate-300">hub</span><p class="mt-2 text-sm text-secondary">Interactive force-directed graph</p><p class="text-xs text-slate-400 mt-1">D3.js visualization — requires live app</p></div></div></div></div>
+<div id="page-compare" class="page"><div class="flex-1 overflow-y-auto p-8"><div class="max-w-5xl mx-auto"><h2 class="text-3xl font-bold tracking-tight text-slate-900 mb-1">Compare</h2><p class="text-slate-500 mb-6">Side-by-side entity analysis</p><div class="grid grid-cols-2 gap-6"><div class="bg-surface-light rounded-2xl border-2 border-dashed border-slate-200 p-8 flex flex-col items-center justify-center text-center" style="height:300px"><span class="mso text-[36px] text-primary/30">add_circle</span><p class="text-sm text-secondary mt-2">Select Entity A</p></div><div class="bg-surface-light rounded-2xl border-2 border-dashed border-purple-200 p-8 flex flex-col items-center justify-center text-center" style="height:300px"><span class="mso text-[36px] text-purple-300">add_circle</span><p class="text-sm text-secondary mt-2">Select Entity B</p></div></div></div></div></div>
+
+</main>
+</div>
+
+<script>
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  var t = document.getElementById('page-' + id);
+  if (t) t.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(a => {
+    var active = a.dataset.page === id;
+    a.className = 'nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-colors ' + (active ? 'bg-primary/15 text-primary' : 'text-slate-600 hover:bg-[#f0f5f4]');
+    var icon = a.querySelector('.mso');
+    if (icon) { if (active) icon.classList.add('mso-fill'); else icon.classList.remove('mso-fill'); }
+  });
+}
+document.querySelectorAll('[data-page]').forEach(function(el) {
+  el.addEventListener('click', function(e) { e.preventDefault(); showPage(el.dataset.page); });
+});
+var collapsed = false;
+function toggleSidebar() {
+  collapsed = !collapsed;
+  var sb = document.getElementById('sidebar');
+  sb.classList.toggle('w-64', !collapsed);
+  sb.classList.toggle('w-[72px]', collapsed);
+  document.getElementById('collapse-icon').style.transform = collapsed ? 'rotate(180deg)' : '';
+  document.querySelectorAll('.sidebar-label').forEach(function(el) { el.style.display = collapsed ? 'none' : ''; });
+  document.querySelectorAll('.nav-item').forEach(function(a) { if (collapsed) a.classList.add('justify-center'); else a.classList.remove('justify-center'); });
+}
+</script>
+</body>
+</html>

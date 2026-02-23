@@ -10,18 +10,19 @@ const GRAPH_H = 700
 const TYPE_ICON: Record<string, string> = {
   brand: 'storefront', product: 'inventory_2', place: 'location_on',
   person: 'person', work: 'movie', event: 'event', organization: 'corporate_fare',
-  content_topic: 'tag',
+  content_topic: 'tag', scenario: 'explore',
 }
 
 const NODE_BORDER: Record<string, string> = {
   brand: '#3b82f6', product: '#a855f7', place: '#10b981',
   person: '#f97316', work: '#ec4899', event: '#eab308', organization: '#14b8a6',
-  content_topic: '#6366f1',
+  content_topic: '#6366f1', scenario: '#06b6d4',
 }
 
 const TYPE_LABELS: Record<string, string> = {
   brand: 'Brand', product: 'Product', place: 'Place', person: 'Person',
   work: 'Work', event: 'Event', organization: 'Organization', content_topic: 'Topic',
+  scenario: 'Scenario',
 }
 
 const LEGEND = [
@@ -30,6 +31,7 @@ const LEGEND = [
   { color: '#3b82f6', label: 'Location', dash: false },
   { color: '#f97316', label: 'Endorses', dash: false },
   { color: '#a855f7', label: 'Founded', dash: false },
+  { color: '#06b6d4', label: 'Needs', dash: false },
 ]
 
 function edgeStyle(linkType: string) {
@@ -40,6 +42,8 @@ function edgeStyle(linkType: string) {
   if (['founded', 'founded_by'].includes(linkType)) return { color: '#a855f7', dash: '' }
   if (['discusses', 'discussed_by'].includes(linkType)) return { color: '#6366f1', dash: '4 2' }
   if (['relevant_to', 'has_relevant_topic'].includes(linkType)) return { color: '#8b5cf6', dash: '' }
+  if (['needs', 'needed_by'].includes(linkType)) return { color: '#06b6d4', dash: '' }
+  if (['involves', 'involved_in'].includes(linkType)) return { color: '#f59e0b', dash: '4 2' }
   return { color: '#94a3b8', dash: '3 3' }
 }
 
@@ -549,7 +553,7 @@ export function KnowledgeGraph() {
                         : 'bg-white/90 backdrop-blur-sm text-slate-600 border border-slate-200/80 shadow-sm hover:bg-white'
                     }`}
                   >All ({graphData?.nodes.length ?? 0})</button>
-                  {['brand', 'product', 'place', 'person', 'work', 'event', 'organization', 'content_topic'].filter(t => typeCounts.has(t)).map(t => (
+                  {['brand', 'product', 'scenario', 'place', 'person', 'work', 'event', 'organization', 'content_topic'].filter(t => typeCounts.has(t)).map(t => (
                     <button
                       key={t}
                       onClick={() => setTypeFilter(typeFilter === t ? '' : t)}

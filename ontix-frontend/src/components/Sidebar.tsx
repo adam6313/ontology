@@ -10,6 +10,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { icon: 'monitoring', label: 'Overview', hash: '' },
+  { icon: 'explore', label: 'Scenarios', hash: 'scenarios' },
   { icon: 'search', label: 'Search', hash: 'search' },
   { icon: 'hub', label: 'Graph', hash: 'graph' },
   { icon: 'compare_arrows', label: 'Compare', hash: 'compare' },

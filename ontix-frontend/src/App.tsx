@@ -5,6 +5,7 @@ import { Inbox } from './pages/Inbox'
 import { SemanticSearch } from './pages/SemanticSearch'
 import { KnowledgeGraph } from './pages/KnowledgeGraph'
 import { ComparePage } from './pages/ComparePage'
+import { ScenarioMap } from './pages/ScenarioMap'
 
 interface RouteState {
   page: string
@@ -71,6 +72,9 @@ function App() {
     }
     if (displayRoute.page === 'compare') {
       return <ComparePage entityIdA={displayRoute.query?.a} entityIdB={displayRoute.query?.b} />
+    }
+    if (displayRoute.page === 'scenarios') {
+      return <ScenarioMap />
     }
     return <Pulse />
   }

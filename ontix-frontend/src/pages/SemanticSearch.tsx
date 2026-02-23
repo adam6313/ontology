@@ -6,7 +6,6 @@ import type { ApiResponse, EntitySummary, EntityDetail } from '../types'
 import { TYPE_BADGE } from '../constants'
 
 const CARD = 'bg-surface-light rounded-2xl border border-border-light shadow-sm'
-const CARD_HOVER = `${CARD} hover:-translate-y-0.5 hover:shadow-md transition-all`
 
 const TYPE_LABELS: Record<string, string> = {
   brand: 'Brand', product: 'Product', place: 'Place', person: 'Person',

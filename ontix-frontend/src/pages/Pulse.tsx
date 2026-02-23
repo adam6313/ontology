@@ -16,6 +16,7 @@ const CARD_HOVER = `${CARD} hover:-translate-y-0.5 hover:shadow-md transition-al
 const TYPE_LABELS: Record<string, string> = {
   brand: 'Brand', product: 'Product', place: 'Place', person: 'Person',
   work: 'Work', event: 'Event', organization: 'Organization', content_topic: 'Topic',
+  scenario: 'Scenario',
 }
 
 const SORT_OPTIONS = [
@@ -27,13 +28,14 @@ const SORT_OPTIONS = [
 
 type SortKey = (typeof SORT_OPTIONS)[number]['key']
 
-const TYPE_ORDER = ['brand', 'product', 'place', 'person', 'work', 'event', 'organization', 'content_topic']
+const TYPE_ORDER = ['brand', 'product', 'scenario', 'place', 'person', 'work', 'event', 'organization', 'content_topic']
 
 const TREEMAP_NAMES: Record<string, string> = {
-  brand: 'Tea Chains & Retail',
-  product: 'Beverages & Desserts',
+  brand: 'Telecom Brands',
+  product: 'Plans & Services',
+  scenario: 'Life Scenarios',
   person: 'KOLs & Creators',
-  place: 'Venues & Locations',
+  place: 'Stores & Counters',
   work: 'Content & Products',
   event: 'Events & Campaigns',
   organization: 'Organizations',
@@ -209,7 +211,8 @@ export function Pulse() {
 
   const recentEntities = useMemo(() => {
     return entities
-      .filter(e => e.mention_count <= 8)
+      .filter(e => e.mention_count > 0)
+      .sort((a, b) => a.mention_count - b.mention_count)
       .slice(0, 3)
   }, [entities])
 
@@ -291,7 +294,7 @@ export function Pulse() {
               <input
                 ref={searchInputRef}
                 type="text"
-                placeholder="Ask about trends, e.g., '鬍子茶 sentiment'..."
+                placeholder="Ask about trends..."
                 className="w-full h-14 pl-12 pr-20 rounded-xl bg-slate-50 border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 placeholder:text-slate-400 transition-all shadow-sm group-hover:shadow-md text-sm"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
@@ -386,8 +389,8 @@ export function Pulse() {
                 {(topMovers.length > 0 || sentimentDrops.length > 0 || recentEntities.length > 0) && (
                   <section>
                     <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2 mb-4">
-                      <span className="material-symbols-outlined text-primary">change_history</span>
-                      What Changed
+                      <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                      Key Changes
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       {/* Top Movers */}

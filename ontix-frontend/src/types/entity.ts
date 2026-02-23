@@ -115,7 +115,7 @@ export interface InboxFact {
   object_id: string
   entity_name: string
   entity_type: string
-  fact_type: 'alert' | 'risk_signal' | 'trend' | 'insight'
+  fact_type: 'alert' | 'risk_signal' | 'trend' | 'insight' | 'opportunity'
   severity: 'info' | 'warning' | 'critical'
   title: string
   description: string

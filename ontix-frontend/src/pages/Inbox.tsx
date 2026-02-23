@@ -22,6 +22,7 @@ const FACT_TYPE_ICON: Record<string, string> = {
   risk_signal: 'trending_down',
   trend: 'trending_up',
   insight: 'auto_awesome',
+  opportunity: 'lightbulb',
 }
 
 const FACT_TYPE_LABEL: Record<string, string> = {
@@ -29,6 +30,7 @@ const FACT_TYPE_LABEL: Record<string, string> = {
   risk_signal: '風險',
   trend: '趨勢',
   insight: '洞察',
+  opportunity: '機會',
 }
 
 const SEVERITY_LABEL: Record<string, string> = {
@@ -38,7 +40,7 @@ const SEVERITY_LABEL: Record<string, string> = {
 }
 
 type SeverityFilter = '' | 'critical' | 'warning' | 'info'
-type FactTypeFilter = '' | 'alert' | 'risk_signal' | 'trend' | 'insight'
+type FactTypeFilter = '' | 'alert' | 'risk_signal' | 'trend' | 'insight' | 'opportunity'
 
 function formatEvidence(evidence: Record<string, unknown> | undefined): string[] {
   if (!evidence || Object.keys(evidence).length === 0) return []
@@ -198,6 +200,7 @@ export function Inbox() {
     { value: 'alert', label: '警報' },
     { value: 'trend', label: '趨勢' },
     { value: 'insight', label: '洞察' },
+    { value: 'opportunity', label: '機會' },
   ]
 
   return (
@@ -305,6 +308,7 @@ export function Inbox() {
             <div className="flex flex-col gap-3">
               {facts.map((fact, i) => {
                 const isInsight = fact.fact_type === 'insight'
+                const isOpportunity = fact.fact_type === 'opportunity'
                 const evidenceLines = formatEvidence(fact.evidence)
                 const isSelected = selected.has(fact.id)
                 return (
@@ -313,6 +317,7 @@ export function Inbox() {
                     className={`${CARD} p-5 ${SEVERITY_STYLES[fact.severity] ?? ''} ${
                       fact.is_read ? 'opacity-60' : ''
                     } ${isInsight ? 'bg-gradient-to-r from-purple-50/60 to-white' : ''} ${
+                      isOpportunity ? 'bg-gradient-to-r from-amber-50/60 to-white' : ''} ${
                       isSelected ? 'ring-2 ring-primary/30' : ''
                     } hover:-translate-y-0.5 hover:shadow-md transition-all`}
                     style={i < 10 ? { animation: `cardIn 400ms ease-out ${i * 60}ms both` } : undefined}
@@ -330,7 +335,7 @@ export function Inbox() {
 
                       {/* Icon */}
                       <span className={`material-symbols-outlined text-xl mt-0.5 ${
-                        isInsight ? 'text-purple-500' : 'text-slate-500'
+                        isInsight ? 'text-purple-500' : isOpportunity ? 'text-amber-500' : 'text-slate-500'
                       }`}>
                         {FACT_TYPE_ICON[fact.fact_type] ?? 'info'}
                       </span>
