@@ -2,10 +2,11 @@ import { useState, useEffect, useMemo } from 'react'
 import { Sidebar } from '../components/Sidebar'
 import type { ApiResponse, EntitySummary, GraphData, GraphEdge, InboxFact } from '../types'
 import { TYPE_BADGE } from '../constants'
+import { DEMO_ID } from '../demo-context'
 
 const CARD = 'bg-surface-light rounded-2xl border border-border-light shadow-sm'
 
-// Scenario → sub-needs → product mapping (hardcoded for demo)
+// Scenario → sub-needs → product mapping
 interface ScenarioNeed {
   label: string
   icon: string
@@ -24,7 +25,8 @@ interface ScenarioData {
   opportunity: InboxFact | null
 }
 
-const SCENARIO_NEEDS: Record<string, ScenarioNeed[]> = {
+// --- TWM scenario data ---
+const TWM_SCENARIO_NEEDS: Record<string, ScenarioNeed[]> = {
   s001: [
     { label: '上網需求', icon: 'wifi', productId: 'p002', productName: '出國漫遊日租 $219/日' },
     { label: '通話需求', icon: 'call', productId: 'p006', productName: '國際通話加值包' },
@@ -80,7 +82,7 @@ const SCENARIO_NEEDS: Record<string, ScenarioNeed[]> = {
   ],
 }
 
-const SCENARIO_ICONS: Record<string, string> = {
+const TWM_SCENARIO_ICONS: Record<string, string> = {
   s001: 'flight_takeoff',
   s002: 'weekend',
   s003: 'commute',
@@ -92,6 +94,76 @@ const SCENARIO_ICONS: Record<string, string> = {
   s009: 'elderly',
   s010: 'forest',
 }
+
+// --- Carrefour scenario data ---
+const CARREFOUR_SCENARIO_NEEDS: Record<string, ScenarioNeed[]> = {
+  s001: [
+    { label: '消費者品牌名', icon: 'branding_watermark', productId: null, productName: null },
+    { label: '法國供應鏈延續', icon: 'local_shipping', productId: 'p007', productName: '法國進口商品專區' },
+    { label: '自有品牌重塑', icon: 'label', productId: 'p002', productName: '家樂福自有品牌' },
+    { label: '消費者溝通管道', icon: 'campaign', productId: 'p006', productName: '家樂福 APP' },
+    { label: '品牌轉型行銷', icon: 'trending_up', productId: null, productName: null },
+  ],
+  s002: [
+    { label: '生鮮蔬果選購', icon: 'nutrition', productId: 'p004', productName: '生鮮蔬果區' },
+    { label: '烘焙麵包體驗', icon: 'bakery_dining', productId: 'p001', productName: '法式烘焙（法棍/可頌）' },
+    { label: '熟食即食', icon: 'restaurant', productId: 'p003', productName: '紅藜烤雞' },
+    { label: 'DM 促銷優惠', icon: 'sell', productId: 'p009', productName: '量販促銷 DM' },
+    { label: '家電日用補貨', icon: 'devices', productId: 'p011', productName: '家電 3C 區' },
+  ],
+  s003: [
+    { label: '線上下單平台', icon: 'shopping_cart', productId: 'p005', productName: '家樂福線上購物' },
+    { label: 'APP 操作體驗', icon: 'smartphone', productId: 'p006', productName: '家樂福 APP' },
+    { label: '生鮮冷鏈配送', icon: 'ac_unit', productId: null, productName: null },
+    { label: '社區取貨點', icon: 'storefront', productId: null, productName: null },
+  ],
+  s004: [
+    { label: '法棍 / 可頌 / 蝴蝶酥', icon: 'bakery_dining', productId: 'p001', productName: '法式烘焙（法棍/可頌）' },
+    { label: '紅藜烤雞搭配', icon: 'lunch_dining', productId: 'p003', productName: '紅藜烤雞' },
+    { label: '法國進口巧克力', icon: 'cake', productId: 'p007', productName: '法國進口商品專區' },
+    { label: '有機甜品', icon: 'eco', productId: 'p012', productName: '有機/健康食品區' },
+  ],
+  s005: [
+    { label: 'OPENPOINT 累點', icon: 'loyalty', productId: 'p008', productName: '家樂福聯名信用卡' },
+    { label: '跨通路點數使用', icon: 'store', productId: null, productName: null },
+    { label: '促銷折抵', icon: 'redeem', productId: 'p009', productName: '量販促銷 DM' },
+    { label: '會員 APP 管理', icon: 'smartphone', productId: 'p006', productName: '家樂福 APP' },
+  ],
+  s006: [
+    { label: '法國起司 / 火腿', icon: 'restaurant', productId: 'p007', productName: '法國進口商品專區' },
+    { label: '紅酒選購', icon: 'wine_bar', productId: 'p015', productName: '酒類專區' },
+    { label: '有機健康食材', icon: 'eco', productId: 'p012', productName: '有機/健康食品區' },
+    { label: '異國調味料', icon: 'soup_kitchen', productId: null, productName: null },
+  ],
+  s007: [
+    { label: '法國進口禮盒', icon: 'redeem', productId: 'p007', productName: '法國進口商品專區' },
+    { label: '紅酒禮盒', icon: 'wine_bar', productId: 'p015', productName: '酒類專區' },
+    { label: '年菜食材（烤雞）', icon: 'lunch_dining', productId: 'p003', productName: '紅藜烤雞' },
+    { label: '生鮮年貨', icon: 'nutrition', productId: 'p004', productName: '生鮮蔬果區' },
+  ],
+  s008: [
+    { label: '日用品囤貨', icon: 'shopping_cart', productId: 'p009', productName: '量販促銷 DM' },
+    { label: '冷凍食品', icon: 'ac_unit', productId: 'p010', productName: '冷凍食品專區' },
+    { label: '嬰幼兒用品', icon: 'child_care', productId: 'p013', productName: '嬰幼兒用品區' },
+    { label: '寵物用品', icon: 'pets', productId: 'p014', productName: '寵物用品區' },
+    { label: '線上訂購到府', icon: 'local_shipping', productId: 'p005', productName: '家樂福線上購物' },
+  ],
+}
+
+const CARREFOUR_SCENARIO_ICONS: Record<string, string> = {
+  s001: 'autorenew',
+  s002: 'shopping_cart',
+  s003: 'local_shipping',
+  s004: 'bakery_dining',
+  s005: 'loyalty',
+  s006: 'language',
+  s007: 'redeem',
+  s008: 'family_restroom',
+}
+
+// --- Select based on DEMO_ID ---
+const SCENARIO_NEEDS = DEMO_ID === 'carrefour' ? CARREFOUR_SCENARIO_NEEDS : TWM_SCENARIO_NEEDS
+const SCENARIO_ICONS = DEMO_ID === 'carrefour' ? CARREFOUR_SCENARIO_ICONS : TWM_SCENARIO_ICONS
 
 // Force layout for scenario graph
 const GRAPH_W = 900
@@ -266,7 +338,7 @@ export function ScenarioMap() {
                 Scenario Explorer
               </h2>
               <p className="text-sm text-slate-500 mt-1">
-                Consumer life scenarios mapped to Taiwan Mobile products
+                {DEMO_ID === 'carrefour' ? 'Consumer life scenarios mapped to Carrefour products' : 'Consumer life scenarios mapped to Taiwan Mobile products'}
               </p>
             </div>
             <div className="flex gap-2">
@@ -387,7 +459,7 @@ export function ScenarioMap() {
                           {scenario.needs.map((need, j) => (
                             <div key={j} className="flex items-center gap-3">
                               <span className="material-symbols-outlined text-[18px] text-slate-400">{need.icon}</span>
-                              <span className="text-sm font-medium text-slate-700 w-28 shrink-0">{need.label}</span>
+                              <span className="text-sm font-medium text-slate-700 w-40 shrink-0">{need.label}</span>
                               <div className="flex-1 h-px bg-slate-200 mx-2" />
                               {need.productId ? (
                                 <a
@@ -486,19 +558,6 @@ export function ScenarioMap() {
                           className="text-[11px] font-semibold fill-slate-700"
                         >
                           {node.canonical_name}
-                        </text>
-                        <text
-                          x={pos.x} y={pos.y + 5}
-                          textAnchor="middle"
-                          className="text-[13px] fill-slate-500"
-                          style={{ fontFamily: 'Material Symbols Outlined' }}
-                        >
-                          {SCENARIO_ICONS[node.id] === 'flight_takeoff' ? '\ue539' :
-                           SCENARIO_ICONS[node.id] === 'weekend' ? '\ue16b' :
-                           SCENARIO_ICONS[node.id] === 'commute' ? '\ue940' :
-                           SCENARIO_ICONS[node.id] === 'home_work' ? '\uea09' :
-                           SCENARIO_ICONS[node.id] === 'pets' ? '\ue91d' :
-                           SCENARIO_ICONS[node.id] === 'school' ? '\ue80c' : '\ue87a'}
                         </text>
                       </g>
                     )

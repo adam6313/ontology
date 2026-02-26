@@ -7,6 +7,7 @@ import { useWatchlist } from '../hooks/useWatchlist'
 import { usePeriod } from '../hooks/usePeriod'
 import type { ApiResponse, EntitySummary, DashboardResponse, InboxFact, EntityGridItem } from '../types'
 import { TYPE_BADGE } from '../constants'
+import { DEMO_ID } from '../demo-context'
 
 // --- Shared UI constants ---
 
@@ -30,7 +31,7 @@ type SortKey = (typeof SORT_OPTIONS)[number]['key']
 
 const TYPE_ORDER = ['brand', 'product', 'scenario', 'place', 'person', 'work', 'event', 'organization', 'content_topic']
 
-const TREEMAP_NAMES: Record<string, string> = {
+const TWM_TREEMAP_NAMES: Record<string, string> = {
   brand: 'Telecom Brands',
   product: 'Plans & Services',
   scenario: 'Life Scenarios',
@@ -41,6 +42,20 @@ const TREEMAP_NAMES: Record<string, string> = {
   organization: 'Organizations',
   content_topic: 'Topics & Trends',
 }
+
+const CARREFOUR_TREEMAP_NAMES: Record<string, string> = {
+  brand: 'Retail Brands',
+  product: 'Products & Sections',
+  scenario: 'Life Scenarios',
+  person: 'KOLs & Creators',
+  place: 'Stores',
+  work: 'Content & Products',
+  event: 'Events & Campaigns',
+  organization: 'Organizations',
+  content_topic: 'Topics & Trends',
+}
+
+const TREEMAP_NAMES = DEMO_ID === 'carrefour' ? CARREFOUR_TREEMAP_NAMES : TWM_TREEMAP_NAMES
 
 /** Only match explicit +/- change rates, not absolute proportions like "35%" */
 function extractPct(title: string): string | null {
