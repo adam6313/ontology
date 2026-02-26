@@ -872,15 +872,6 @@ const PLATFORM_AUTHORS: Record<string, string[]> = {
   'Google評論': GOOGLE_AUTHORS, '新聞媒體': NEWS_AUTHORS, Mobile01: M01_AUTHORS, 'LINE社群': FB_AUTHORS, YouTube: IG_AUTHORS,
 }
 
-const SENTIMENTS: Array<{ label: string; score: number }> = [
-  { label: 'positive', score: 0.82 }, { label: 'positive', score: 0.88 }, { label: 'positive', score: 0.78 },
-  { label: 'positive', score: 0.91 }, { label: 'positive', score: 0.72 }, { label: 'positive', score: 0.75 },
-  { label: 'positive', score: 0.85 }, { label: 'positive', score: 0.69 },
-  { label: 'negative', score: 0.25 }, { label: 'negative', score: 0.18 }, { label: 'negative', score: 0.22 },
-  { label: 'negative', score: 0.28 }, { label: 'negative', score: 0.15 }, { label: 'negative', score: 0.32 },
-  { label: 'neutral', score: 0.48 }, { label: 'neutral', score: 0.52 }, { label: 'neutral', score: 0.50 },
-  { label: 'mixed', score: 0.45 }, { label: 'mixed', score: 0.42 }, { label: 'mixed', score: 0.55 },
-]
 
 function detectPlatform(tpl: string): string {
   if (tpl.startsWith('⭐')) return 'Google評論'
